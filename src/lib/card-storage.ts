@@ -1,4 +1,10 @@
 import { createClient, type SupabaseClient } from "@supabase/supabase-js";
+import {
+  githubCreateCard,
+  githubGetCard,
+  githubUpdateCard,
+  isGitHubConfigured,
+} from "@/lib/github-storage";
 import type {
   MeetingCard,
   MeetingSession,
@@ -48,6 +54,14 @@ export function isSupabaseConfigured(): boolean {
   );
 }
 
+export type StorageBackend = "supabase" | "github" | "memory";
+
+export function getStorageBackend(): StorageBackend {
+  if (isSupabaseConfigured()) return "supabase";
+  if (isGitHubConfigured()) return "github";
+  return "memory";
+}
+
 export async function createCard(card: MeetingCard): Promise<MeetingSession> {
   const row: CardRow = {
     id: card.id,
@@ -64,6 +78,8 @@ export async function createCard(card: MeetingCard): Promise<MeetingSession> {
   if (supabase) {
     const { error } = await supabase.from("meeting_cards").insert(row);
     if (error) throw new Error(error.message);
+  } else if (isGitHubConfigured()) {
+    await githubCreateCard(row);
   } else {
     memoryStore.set(row.id, row);
   }
@@ -81,6 +97,11 @@ export async function getCard(id: string): Promise<MeetingSession | null> {
       .maybeSingle();
     if (error) throw new Error(error.message);
     return data ? rowToSession(data as CardRow) : null;
+  }
+
+  if (isGitHubConfigured()) {
+    const row = await githubGetCard(id);
+    return row ? rowToSession(row) : null;
   }
 
   const row = memoryStore.get(id);
@@ -101,6 +122,11 @@ export async function updateCard(
       .maybeSingle();
     if (error) throw new Error(error.message);
     return data ? rowToSession(data as CardRow) : null;
+  }
+
+  if (isGitHubConfigured()) {
+    const updated = await githubUpdateCard(id, patch);
+    return updated ? rowToSession(updated) : null;
   }
 
   const row = memoryStore.get(id);

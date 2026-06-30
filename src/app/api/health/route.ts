@@ -1,12 +1,13 @@
-import { isSupabaseConfigured } from "@/lib/card-storage";
+import { getStorageBackend } from "@/lib/card-storage";
 
 export async function GET() {
-  const storage = isSupabaseConfigured() ? "supabase" : "memory";
+  const storage = getStorageBackend();
 
   return Response.json({
     ok: true,
     storage,
-    persistent: storage === "supabase",
+    persistent: storage !== "memory",
     siteUrl: process.env.NEXT_PUBLIC_SITE_URL ?? null,
+    githubRepo: process.env.GITHUB_STORAGE_REPO ?? null,
   });
 }
