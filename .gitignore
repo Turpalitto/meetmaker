@@ -37,6 +37,10 @@ yarn-error.log*
 # vercel
 .vercel
 
+# sqlite artifacts
+auth
+auth-wal
+
 # typescript
 *.tsbuildinfo
 next-env.d.ts
