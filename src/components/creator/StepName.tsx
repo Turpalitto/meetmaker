@@ -1,7 +1,6 @@
 'use client';
 
 import { useState } from 'react';
-import { motion } from 'framer-motion';
 import { useMeetingStore } from '@/store/useMeetingStore';
 import { ArrowRight, Coffee, Film, Footprints, Utensils } from 'lucide-react';
 
@@ -33,12 +32,7 @@ export function StepName() {
   };
 
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 30 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.6, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
-      className="w-full max-w-md"
-    >
+    <div className="w-full max-w-md">
       {/* Big input field */}
       <div className="mb-8">
         <input
@@ -51,22 +45,16 @@ export function StepName() {
           autoFocus
         />
         <div className="h-0.5 bg-white/10 mt-4 rounded-full overflow-hidden">
-          <motion.div
-            className="h-full bg-gradient-to-r from-indigo-500 to-purple-500"
-            animate={{ width: localTitle ? '100%' : '0%' }}
-            transition={{ duration: 0.3 }}
+          <div
+            className="h-full bg-gradient-to-r from-indigo-500 to-purple-500 transition-all duration-300"
+            style={{ width: localTitle ? '100%' : '0%' }}
           />
         </div>
       </div>
 
       {/* Suggestions */}
       {!localTitle && (
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.4 }}
-          className="mb-8"
-        >
+        <div className="mb-8">
           <p className="text-white/30 text-sm text-center mb-4 font-light">Быстрый выбор</p>
           <div className="flex justify-center gap-3 flex-wrap">
             {suggestions.map((item) => {
@@ -83,15 +71,11 @@ export function StepName() {
               );
             })}
           </div>
-        </motion.div>
+        </div>
       )}
 
       {/* Continue button */}
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: canContinue ? 1 : 0.3 }}
-        className="flex justify-center"
-      >
+      <div className="flex justify-center">
         <button
           onClick={handleContinue}
           disabled={!canContinue}
@@ -101,7 +85,7 @@ export function StepName() {
           <ArrowRight className="h-4 w-4" strokeWidth={2} />
           <div className="absolute inset-0 rounded-full bg-gradient-to-r from-indigo-500/10 to-purple-500/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
         </button>
-      </motion.div>
-    </motion.div>
+      </div>
+    </div>
   );
 }

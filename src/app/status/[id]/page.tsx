@@ -3,7 +3,6 @@
 import { useEffect, useState } from 'react';
 import { useParams } from 'next/navigation';
 import Link from 'next/link';
-import { motion } from 'framer-motion';
 import { AuroraBackground } from '@/components/AuroraBackground';
 import { fetchCard } from '@/lib/api';
 import { choiceToLabel, formatDateShort } from '@/lib/utils';
@@ -89,10 +88,7 @@ export default function StatusPage() {
           )}
 
           {session && (
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-            >
+            <div className="animate-in fade-in slide-in-from-bottom-4 duration-500">
               <h1 className="text-3xl font-bold text-white mb-2">
                 {session.card.title}
               </h1>
@@ -165,7 +161,7 @@ export default function StatusPage() {
               >
                 Открыть открытку
               </Link>
-            </motion.div>
+            </div>
           )}
         </div>
       </div>

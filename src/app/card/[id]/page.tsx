@@ -1,11 +1,16 @@
 'use client';
 
+import dynamic from 'next/dynamic';
 import { useEffect, useState } from 'react';
 import { useParams } from 'next/navigation';
 import { AuroraBackground } from '@/components/AuroraBackground';
-import { RecipientFlow } from '@/components/recipient/RecipientFlow';
 import { useMeetingStore } from '@/store/useMeetingStore';
 import { fetchCard, markCardOpened } from '@/lib/api';
+
+const RecipientFlow = dynamic(
+  () => import('@/components/recipient/RecipientFlow').then((m) => m.RecipientFlow),
+  { ssr: false, loading: () => <p className="text-white/40 text-lg">Загрузка…</p> },
+);
 
 export default function CardPage() {
   const params = useParams();
@@ -17,7 +22,6 @@ export default function CardPage() {
 
   useEffect(() => {
     if (!id) return;
-
     let cancelled = false;
 
     async function load() {
@@ -29,9 +33,7 @@ export default function CardPage() {
           return;
         }
         loadSession(session);
-        if (session.status === 'created') {
-          await markCardOpened(id);
-        }
+        if (session.status === 'created') await markCardOpened(id);
       } catch {
         if (!cancelled) setNotFound(true);
       } finally {
@@ -40,35 +42,18 @@ export default function CardPage() {
     }
 
     load();
-    return () => {
-      cancelled = true;
-    };
+    return () => { cancelled = true; };
   }, [id, loadSession]);
 
   const theme = currentSession?.card.theme || 'minimal';
 
-  if (loading) {
-    return (
-      <main className="relative min-h-screen w-full overflow-hidden bg-black">
-        <AuroraBackground theme={theme} />
-        <div className="relative z-10 min-h-screen flex items-center justify-center">
-          <p className="text-white/40 text-lg">Загрузка открытки…</p>
-        </div>
-      </main>
-    );
-  }
-
   return (
-    <main className="relative min-h-screen w-full overflow-hidden bg-black">
-      <AuroraBackground theme={theme} />
-      <div className="relative z-10 min-h-screen">
-        {currentSession && !notFound ? (
-          <RecipientFlow />
-        ) : (
-          <div className="min-h-screen flex flex-col items-center justify-center px-6">
-            <p className="text-white/40 text-lg">Открытка не найдена</p>
-          </div>
-        )}
+    <main className="relative min-h-screen w-full bg-black">
+      <AuroraBackground theme={theme} className="-z-10" />
+      <div className="relative z-10 min-h-screen flex flex-col items-center justify-center px-6">
+        {loading && <p className="text-white/40 text-lg">Загрузка открытки…</p>}
+        {!loading && notFound && <p className="text-white/40 text-lg">Открытка не найдена</p>}
+        {!loading && currentSession && !notFound && <RecipientFlow />}
       </div>
     </main>
   );

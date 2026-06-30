@@ -41,6 +41,7 @@ NEXT_PUBLIC_SITE_URL=https://your-domain.vercel.app
 | `/status/[id]` | Статус встречи для создателя |
 | `POST /api/cards` | Создать открытку |
 | `GET/PATCH /api/cards/[id]` | Получить / обновить |
+| `GET /api/health` | Проверка storage (supabase / memory) |
 
 ## Деплой на Vercel
 
