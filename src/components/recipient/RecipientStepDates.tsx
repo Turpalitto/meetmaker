@@ -1,8 +1,9 @@
 'use client';
 
 import { useMeetingStore } from '@/store/useMeetingStore';
-import { Calendar } from 'lucide-react';
+import { Calendar, ChevronRight } from 'lucide-react';
 import { formatDate } from '@/lib/utils';
+import { StaggerItem } from '@/components/StepTransition';
 
 export function RecipientStepDates() {
   const card = useMeetingStore((s) => s.currentSession?.card);
@@ -16,24 +17,26 @@ export function RecipientStepDates() {
       <h2 className="text-3xl font-bold text-white mb-3">Когда тебе удобно?</h2>
       <p className="text-white/30 text-sm mb-8">Выбери один из вариантов</p>
       <div className="space-y-3">
-        {card.dates.map((d) => (
-          <button
-            key={d.date}
-            type="button"
-            onClick={() => {
-              setSelectedDate(d.date);
-              setRecipientStep(1);
-            }}
-            className="w-full date-card flex items-center gap-4 p-5 text-left"
-          >
-            <div className="w-12 h-12 rounded-2xl bg-indigo-500/10 flex items-center justify-center">
-              <Calendar className="h-6 w-6 text-indigo-400" />
-            </div>
-            <div className="flex-1">
-              <p className="text-white font-semibold text-lg">{formatDate(d.date)}</p>
-              <p className="text-white/40 text-sm">{d.times.length} вариантов времени</p>
-            </div>
-          </button>
+        {card.dates.map((d, index) => (
+          <StaggerItem key={d.date} index={index}>
+            <button
+              type="button"
+              onClick={() => {
+                setSelectedDate(d.date);
+                setRecipientStep(1);
+              }}
+              className="w-full date-card flex items-center gap-4 p-5 text-left group"
+            >
+              <div className="w-12 h-12 rounded-2xl bg-theme-soft flex items-center justify-center shrink-0">
+                <Calendar className="h-6 w-6 text-theme" />
+              </div>
+              <div className="flex-1 text-left">
+                <p className="text-white font-semibold text-lg">{formatDate(d.date)}</p>
+                <p className="text-white/40 text-sm">{d.times.length} вариантов времени</p>
+              </div>
+              <ChevronRight className="h-5 w-5 text-white/20 group-hover:text-theme group-hover:translate-x-0.5 transition-all" />
+            </button>
+          </StaggerItem>
         ))}
       </div>
     </div>

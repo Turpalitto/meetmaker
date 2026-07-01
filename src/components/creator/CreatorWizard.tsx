@@ -9,23 +9,28 @@ import { StepTimes } from './StepTimes';
 import { StepPlaces } from './StepPlaces';
 import { StepTheme } from './StepTheme';
 import { StepReady } from './StepReady';
+import { StepTransition } from '@/components/StepTransition';
+import type { ThemeType } from '@/types';
 
 const TOTAL_STEPS = 5;
 
 const stepTitles = [
-  'Как назовем встречу?',
-  'Добавь даты',
-  'Добавь время',
-  'Добавь места',
-  'Выбери оформление',
+  { title: 'Как назовем встречу?', subtitle: 'Одно слово — и настроение готово' },
+  { title: 'Добавь даты', subtitle: 'Получатель выберет удобный день' },
+  { title: 'Добавь время', subtitle: 'Несколько вариантов — меньше переписки' },
+  { title: 'Добавь места', subtitle: 'Кафе, парк или что угодно' },
+  { title: 'Выбери оформление', subtitle: 'Три стиля — три настроения' },
 ];
 
 export function CreatorWizard() {
   const currentStep = useMeetingStore((s) => s.currentStep);
+  const selectedTheme = useMeetingStore((s) => s.selectedTheme);
   const isComplete = currentStep >= TOTAL_STEPS;
 
+  const theme: ThemeType = currentStep >= 4 || isComplete ? selectedTheme : 'minimal';
+
   return (
-    <div className="relative isolate min-h-screen">
+    <div className="relative isolate min-h-screen" data-theme={theme}>
       {!isComplete && (
         <div className="fixed top-0 left-0 right-0 z-[100] px-6 pt-8 pb-4 pointer-events-none">
           <div className="max-w-md mx-auto pointer-events-auto">
@@ -36,44 +41,44 @@ export function CreatorWizard() {
 
       <div className="relative z-[50] min-h-screen">
         {currentStep === 0 && (
-          <div className="min-h-screen flex flex-col items-center justify-center px-6 pt-24 pb-12">
-            <StepTitle title={stepTitles[0]} />
+          <StepTransition stepKey={0} className="min-h-screen flex flex-col items-center justify-center px-6 pt-24 pb-12">
+            <StepTitle {...stepTitles[0]} />
             <StepName />
-          </div>
+          </StepTransition>
         )}
 
         {currentStep === 1 && (
-          <div className="min-h-screen flex flex-col items-center justify-center px-6 pt-24 pb-12">
-            <StepTitle title={stepTitles[1]} />
+          <StepTransition stepKey={1} className="min-h-screen flex flex-col items-center justify-center px-6 pt-24 pb-12">
+            <StepTitle {...stepTitles[1]} />
             <StepDates />
-          </div>
+          </StepTransition>
         )}
 
         {currentStep === 2 && (
-          <div className="min-h-screen flex flex-col items-center px-6 pt-32 pb-12">
-            <StepTitle title={stepTitles[2]} />
+          <StepTransition stepKey={2} className="min-h-screen flex flex-col items-center px-6 pt-32 pb-12">
+            <StepTitle {...stepTitles[2]} />
             <StepTimes />
-          </div>
+          </StepTransition>
         )}
 
         {currentStep === 3 && (
-          <div className="min-h-screen flex flex-col items-center px-6 pt-32 pb-12">
-            <StepTitle title={stepTitles[3]} />
+          <StepTransition stepKey={3} className="min-h-screen flex flex-col items-center px-6 pt-32 pb-12">
+            <StepTitle {...stepTitles[3]} />
             <StepPlaces />
-          </div>
+          </StepTransition>
         )}
 
         {currentStep === 4 && (
-          <div className="min-h-screen flex flex-col items-center justify-center px-6 pt-24 pb-12">
-            <StepTitle title={stepTitles[4]} />
+          <StepTransition stepKey={4} className="min-h-screen flex flex-col items-center justify-center px-6 pt-24 pb-12">
+            <StepTitle {...stepTitles[4]} />
             <StepTheme />
-          </div>
+          </StepTransition>
         )}
 
         {isComplete && (
-          <div className="min-h-screen flex flex-col items-center justify-center px-6 py-12">
+          <StepTransition stepKey="ready" className="min-h-screen flex flex-col items-center justify-center px-6 py-12">
             <StepReady />
-          </div>
+          </StepTransition>
         )}
       </div>
     </div>

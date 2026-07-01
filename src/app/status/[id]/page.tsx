@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import { useParams } from 'next/navigation';
 import Link from 'next/link';
 import { AuroraBackground } from '@/components/AuroraBackground';
+import { ThemeDecorations } from '@/components/ThemeDecorations';
 import { fetchCard } from '@/lib/api';
 import { choiceToLabel, formatDateShort } from '@/lib/utils';
 import type { MeetingSession, MeetingStatus } from '@/types';
@@ -67,8 +68,9 @@ export default function StatusPage() {
   const currentIdx = session ? statusIndex(session.status) : -1;
 
   return (
-    <main className="relative min-h-screen w-full overflow-hidden bg-black">
+    <main className="relative min-h-screen w-full overflow-hidden bg-black" data-theme={theme}>
       <AuroraBackground theme={theme} />
+      <ThemeDecorations theme={theme} intensity="subtle" />
       <div className="relative z-10 min-h-screen px-6 py-12">
         <div className="max-w-md mx-auto">
           <Link
@@ -108,9 +110,17 @@ export default function StatusPage() {
                           <div
                             className={`w-10 h-10 rounded-full flex items-center justify-center border-2 transition-colors ${
                               done
-                                ? 'bg-indigo-500 border-indigo-500 text-white'
+                                ? 'text-white border-transparent'
                                 : 'border-white/15 text-white/25'
                             }`}
+                            style={
+                              done
+                                ? {
+                                    background: 'var(--mm-accent)',
+                                    borderColor: 'var(--mm-accent)',
+                                  }
+                                : undefined
+                            }
                           >
                             {done ? (
                               <Check className="h-5 w-5" strokeWidth={2.5} />
@@ -121,10 +131,13 @@ export default function StatusPage() {
                           {index < STATUS_STEPS.length - 1 && (
                             <div
                               className={`w-0.5 h-8 my-1 ${
-                                index < currentIdx
-                                  ? 'bg-indigo-500'
-                                  : 'bg-white/10'
+                                index < currentIdx ? '' : 'bg-white/10'
                               }`}
+                              style={
+                                index < currentIdx
+                                  ? { background: 'var(--mm-accent)' }
+                                  : undefined
+                              }
                             />
                           )}
                         </div>

@@ -46,7 +46,7 @@ export function StepName() {
         />
         <div className="h-0.5 bg-white/10 mt-4 rounded-full overflow-hidden">
           <div
-            className="h-full bg-gradient-to-r from-indigo-500 to-purple-500 transition-all duration-300"
+            className="h-full theme-gradient-bar transition-all duration-300"
             style={{ width: localTitle ? '100%' : '0%' }}
           />
         </div>
@@ -57,13 +57,14 @@ export function StepName() {
         <div className="mb-8">
           <p className="text-white/30 text-sm text-center mb-4 font-light">Быстрый выбор</p>
           <div className="flex justify-center gap-3 flex-wrap">
-            {suggestions.map((item) => {
+            {suggestions.map((item, index) => {
               const Icon = item.icon;
               return (
                 <button
                   key={item.label}
                   onClick={() => handleSuggestion(item.label)}
-                  className="flex items-center gap-2 px-5 py-3 rounded-full bg-white/5 border border-white/10 text-white/70 hover:bg-white/10 hover:text-white transition-all duration-200 text-sm font-medium"
+                  className="flex items-center gap-2 px-5 py-3 rounded-full bg-white/5 border border-white/10 text-white/70 hover:bg-white/10 hover:text-white hover:scale-[1.03] transition-all duration-200 text-sm font-medium animate-in fade-in slide-in-from-bottom-2 fill-mode-both"
+                  style={{ animationDelay: `${index * 80}ms` }}
                 >
                   <Icon className="h-4 w-4" strokeWidth={1.5} />
                   {item.label}

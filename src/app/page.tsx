@@ -1,12 +1,14 @@
 'use client';
 
-import { AuroraBackground } from '@/components/AuroraBackground';
-import { Sparkles } from 'lucide-react';
 import Link from 'next/link';
+import { AuroraBackground } from '@/components/AuroraBackground';
+import { THEME_CONFIG } from '@/lib/themes';
+import { Sparkles } from 'lucide-react';
+import type { ThemeType } from '@/types';
 
 export default function HomePage() {
   return (
-    <main className="relative min-h-screen w-full overflow-hidden">
+    <main className="relative min-h-screen w-full overflow-hidden" data-theme="minimal">
       <AuroraBackground />
 
       <div className="relative z-10 flex min-h-screen flex-col items-center justify-center px-6">
@@ -23,11 +25,27 @@ export default function HomePage() {
           MeetMaker
         </h1>
 
-        <p className="text-lg sm:text-xl text-white/50 text-center max-w-md mb-12 font-light animate-in fade-in slide-in-from-bottom-4 duration-700 delay-300 fill-mode-both">
+        <p className="text-lg sm:text-xl text-white/50 text-center max-w-md mb-10 font-light animate-in fade-in slide-in-from-bottom-4 duration-700 delay-300 fill-mode-both">
           Самый красивый способ
           <br />
           договориться о встрече
         </p>
+
+        <div className="flex gap-3 mb-10 animate-in fade-in duration-700 delay-400 fill-mode-both">
+          {(Object.keys(THEME_CONFIG) as ThemeType[]).map((id) => {
+            const t = THEME_CONFIG[id];
+            return (
+              <div
+                key={id}
+                className="flex flex-col items-center gap-1 px-3 py-2 rounded-2xl bg-white/5 border border-white/10"
+                title={t.label}
+              >
+                <span className="text-xl">{t.emoji}</span>
+                <span className="text-[10px] text-white/40 uppercase tracking-wide">{t.label}</span>
+              </div>
+            );
+          })}
+        </div>
 
         <div className="animate-in fade-in slide-in-from-bottom-4 duration-700 delay-500 fill-mode-both">
           <Link
@@ -36,7 +54,6 @@ export default function HomePage() {
           >
             <Sparkles className="h-5 w-5 text-indigo-400 group-hover:text-indigo-300 transition-colors" strokeWidth={1.5} />
             Создать открытку
-            <div className="absolute inset-0 rounded-full bg-gradient-to-r from-indigo-500/10 to-purple-500/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
           </Link>
         </div>
 

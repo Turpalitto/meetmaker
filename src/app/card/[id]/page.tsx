@@ -4,6 +4,7 @@ import dynamic from 'next/dynamic';
 import { useEffect, useState } from 'react';
 import { useParams } from 'next/navigation';
 import { AuroraBackground } from '@/components/AuroraBackground';
+import { ThemeDecorations } from '@/components/ThemeDecorations';
 import { useMeetingStore } from '@/store/useMeetingStore';
 import { fetchCard, markCardOpened } from '@/lib/api';
 
@@ -48,8 +49,9 @@ export default function CardPage() {
   const theme = currentSession?.card.theme || 'minimal';
 
   return (
-    <main className="relative min-h-screen w-full bg-black">
+    <main className="relative min-h-screen w-full bg-black" data-theme={theme}>
       <AuroraBackground theme={theme} className="-z-10" />
+      <ThemeDecorations theme={theme} />
       <div className="relative z-10 min-h-screen flex flex-col items-center justify-center px-6">
         {loading && <p className="text-white/40 text-lg">Загрузка открытки…</p>}
         {!loading && notFound && <p className="text-white/40 text-lg">Открытка не найдена</p>}
