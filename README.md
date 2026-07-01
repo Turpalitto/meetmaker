@@ -22,33 +22,17 @@ npm run dev
 
 **Приоритет:** Supabase → GitHub → in-memory (только dev).
 
-### Вариант A — Supabase (рекомендуется)
+### Supabase (активно на meetmaker.vercel.app)
 
-1. Создайте проект на [supabase.com](https://supabase.com)
-2. Выполните `supabase/schema.sql` в SQL Editor
-3. Добавьте env в Vercel:
+Подключено через Vercel Integration (`meetmaker-db`, регион `fra1`).
 
-```
-NEXT_PUBLIC_SUPABASE_URL=https://xxx.supabase.co
-SUPABASE_SERVICE_ROLE_KEY=eyJ...
-NEXT_PUBLIC_SITE_URL=https://meetmaker.vercel.app
+Локально применить схему:
+
+```bash
+node scripts/apply-schema.mjs
 ```
 
-### Вариант B — GitHub (уже настроено для meetmaker.vercel.app)
-
-Карточки сохраняются в приватный репозиторий [meetmaker-data](https://github.com/Turpalitto/meetmaker-data).
-
-Env-переменные:
-
-```
-GITHUB_TOKEN=ghp_... (repo scope)
-GITHUB_STORAGE_REPO=Turpalitto/meetmaker-data
-NEXT_PUBLIC_SITE_URL=https://meetmaker.vercel.app
-```
-
-Проверка: `GET /api/health` → `"storage":"github","persistent":true`
-
-Без Supabase и GitHub данные **не сохраняются** на Vercel между запросами.
+Env подтягиваются автоматически: `npx vercel env pull .env.local`
 
 ## Маршруты
 
