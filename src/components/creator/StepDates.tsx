@@ -55,20 +55,23 @@ export function StepDates() {
   return (
     <div className="w-full max-w-sm">
       <div className="flex gap-2 mb-6 justify-center flex-wrap">
-        {quickDates.map((d) => (
+        {quickDates.map((d) => {
+          const picked = selectedDates.includes(d);
+          return (
           <button
             key={d}
             type="button"
             onClick={() => handleDateClick(d)}
-            className={`px-4 py-2 rounded-full text-sm font-medium transition-all ${
-              selectedDates.includes(d)
-                ? 'bg-indigo-500 text-white shadow-lg shadow-indigo-500/25'
-                : 'bg-white/5 text-white/60 border border-white/10 hover:bg-white/10'
+            className={`px-4 py-2 rounded-full text-sm font-medium transition-all suggestion-pop ${
+              picked
+                ? 'text-white shadow-lg'
+                : 'bg-white/10 text-white/60 border border-white/15 hover:bg-theme-soft'
             }`}
+            style={picked ? { background: 'var(--mm-accent)', boxShadow: '0 8px 24px var(--mm-accent-glow)' } : undefined}
           >
             {formatDate(d).split(',')[0]}
           </button>
-        ))}
+        );})}
       </div>
 
       <div className="glass-card rounded-3xl p-5 mb-8 text-white">
@@ -106,13 +109,14 @@ export function StepDates() {
                 type="button"
                 onClick={() => handleDateClick(dateStr)}
                 disabled={isPast && !isToday}
-                className={`relative aspect-square rounded-2xl text-sm font-medium flex items-center justify-center ${
+                className={`relative aspect-square rounded-2xl text-sm font-medium flex items-center justify-center transition-all ${
                   isSelected
-                    ? 'bg-indigo-500 text-white'
+                    ? 'text-white scale-105'
                     : isPast && !isToday
                     ? 'text-white/15 cursor-not-allowed'
                     : 'text-white/70 hover:bg-white/10'
                 }`}
+                style={isSelected ? { background: 'var(--mm-accent)' } : undefined}
               >
                 {day}
               </button>
@@ -127,7 +131,7 @@ export function StepDates() {
           <div className="flex flex-wrap justify-center gap-2">
             {selectedDates.map((dateStr) => (
               <div key={dateStr} className="date-card flex items-center gap-2 px-4 py-2.5">
-                <Calendar className="h-4 w-4 text-indigo-400" strokeWidth={1.5} />
+                <Calendar className="h-4 w-4 text-theme" strokeWidth={1.5} />
                 <span className="text-white text-sm font-medium">{formatDate(dateStr)}</span>
                 <button type="button" onClick={() => removeDate(dateStr)} className="p-1 rounded-full hover:bg-white/10 text-white/40">
                   <X className="h-3.5 w-3.5" />

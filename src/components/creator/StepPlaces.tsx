@@ -44,7 +44,8 @@ export function StepPlaces() {
           <button
             type="button"
             onClick={() => handleAddPlace(currentPlaceInput.trim())}
-            className="absolute right-3 top-1/2 -translate-y-1/2 p-2 rounded-full bg-indigo-500 text-white"
+            className="absolute right-3 top-1/2 -translate-y-1/2 p-2 rounded-full text-white"
+            style={{ background: 'var(--mm-accent)' }}
           >
             <Plus className="h-4 w-4" />
           </button>
@@ -57,7 +58,7 @@ export function StepPlaces() {
             key={name}
             type="button"
             onClick={() => handleAddPlace(name)}
-            className="px-4 py-2 rounded-full bg-white/5 border border-white/10 text-white/60 hover:bg-white/10 text-sm"
+            className="px-4 py-2 rounded-full bg-white/10 border border-white/15 text-white/70 hover:bg-theme-soft hover:scale-105 text-sm transition-all suggestion-pop"
           >
             + {name}
           </button>
@@ -68,8 +69,8 @@ export function StepPlaces() {
         <div className="space-y-3 mb-8">
           {places.map((place) => (
             <div key={place.id} className="date-card flex items-center gap-3">
-              <div className="w-10 h-10 rounded-xl bg-indigo-500/10 flex items-center justify-center">
-                <MapPin className="h-5 w-5 text-indigo-400" />
+              <div className="w-10 h-10 rounded-xl bg-theme-soft flex items-center justify-center">
+                <MapPin className="h-5 w-5 text-theme" />
               </div>
               <span className="flex-1 text-white font-medium">{place.name}</span>
               <button type="button" onClick={() => removePlace(place.id)} className="p-2 text-white/40 hover:text-white">

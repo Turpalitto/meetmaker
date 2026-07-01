@@ -10,6 +10,7 @@ import { StepPlaces } from './StepPlaces';
 import { StepTheme } from './StepTheme';
 import { StepReady } from './StepReady';
 import { StepTransition } from '@/components/StepTransition';
+import { StepChoiceAmbience } from '@/components/StepChoiceAmbience';
 import type { ThemeType } from '@/types';
 
 const TOTAL_STEPS = 5;
@@ -41,37 +42,47 @@ export function CreatorWizard() {
 
       <div className="relative z-[50] min-h-screen">
         {currentStep === 0 && (
-          <StepTransition stepKey={0} className="min-h-screen flex flex-col items-center justify-center px-6 pt-24 pb-12">
-            <StepTitle {...stepTitles[0]} />
-            <StepName />
+          <StepTransition stepKey={0} className="min-h-screen flex flex-col items-center justify-center px-4 pt-24 pb-12">
+            <StepChoiceAmbience step={0}>
+              <StepTitle {...stepTitles[0]} />
+              <StepName />
+            </StepChoiceAmbience>
           </StepTransition>
         )}
 
         {currentStep === 1 && (
-          <StepTransition stepKey={1} className="min-h-screen flex flex-col items-center justify-center px-6 pt-24 pb-12">
-            <StepTitle {...stepTitles[1]} />
-            <StepDates />
+          <StepTransition stepKey={1} className="min-h-screen flex flex-col items-center justify-center px-4 pt-24 pb-12">
+            <StepChoiceAmbience step={1}>
+              <StepTitle {...stepTitles[1]} />
+              <StepDates />
+            </StepChoiceAmbience>
           </StepTransition>
         )}
 
         {currentStep === 2 && (
-          <StepTransition stepKey={2} className="min-h-screen flex flex-col items-center px-6 pt-32 pb-12">
-            <StepTitle {...stepTitles[2]} />
-            <StepTimes />
+          <StepTransition stepKey={2} className="min-h-screen flex flex-col items-center px-4 pt-32 pb-12">
+            <StepChoiceAmbience step={2}>
+              <StepTitle {...stepTitles[2]} />
+              <StepTimes />
+            </StepChoiceAmbience>
           </StepTransition>
         )}
 
         {currentStep === 3 && (
-          <StepTransition stepKey={3} className="min-h-screen flex flex-col items-center px-6 pt-32 pb-12">
-            <StepTitle {...stepTitles[3]} />
-            <StepPlaces />
+          <StepTransition stepKey={3} className="min-h-screen flex flex-col items-center px-4 pt-32 pb-12">
+            <StepChoiceAmbience step={3}>
+              <StepTitle {...stepTitles[3]} />
+              <StepPlaces />
+            </StepChoiceAmbience>
           </StepTransition>
         )}
 
         {currentStep === 4 && (
-          <StepTransition stepKey={4} className="min-h-screen flex flex-col items-center justify-center px-6 pt-24 pb-12">
-            <StepTitle {...stepTitles[4]} />
-            <StepTheme />
+          <StepTransition stepKey={4} className="min-h-screen flex flex-col items-center justify-center px-4 pt-24 pb-12">
+            <StepChoiceAmbience step={4}>
+              <StepTitle {...stepTitles[4]} />
+              <StepTheme />
+            </StepChoiceAmbience>
           </StepTransition>
         )}
 

@@ -458,6 +458,106 @@ html.dark body {
   background: rgba(255, 255, 255, 0.04);
 }
 
+/* ── Choice step ambience (orbiting stickers) ── */
+.choice-stage {
+  min-height: 12rem;
+}
+
+.choice-orbit-layer {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 0;
+  height: 0;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.choice-orbit-item {
+  position: absolute;
+  left: 0;
+  top: 0;
+  margin-left: -0.75rem;
+  margin-top: -0.75rem;
+  opacity: 0.85;
+  animation: choice-orbit var(--orbit-d, 14s) linear infinite;
+  animation-delay: var(--orbit-delay, 0s);
+  will-change: transform;
+}
+
+@keyframes choice-orbit {
+  from {
+    transform: rotate(0deg) translateX(var(--orbit-r, 10rem)) rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg) translateX(var(--orbit-r, 10rem)) rotate(-360deg);
+  }
+}
+
+.choice-pulse-ring {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: min(100%, 22rem);
+  height: min(70%, 18rem);
+  transform: translate(-50%, -50%);
+  border-radius: 2rem;
+  border: 1px solid var(--mm-accent);
+  opacity: 0.25;
+  animation: choice-pulse 4s ease-in-out infinite;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.choice-pulse-ring-delayed {
+  width: min(108%, 24rem);
+  height: min(78%, 20rem);
+  animation-delay: 2s;
+  opacity: 0.15;
+}
+
+@keyframes choice-pulse {
+  0%,
+  100% {
+    transform: translate(-50%, -50%) scale(0.98);
+    opacity: 0.15;
+  }
+  50% {
+    transform: translate(-50%, -50%) scale(1.03);
+    opacity: 0.4;
+  }
+}
+
+.choice-drift {
+  animation: choice-drift 5s ease-in-out infinite;
+  z-index: 1;
+}
+
+@keyframes choice-drift {
+  0%,
+  100% {
+    transform: translateY(0) scale(1);
+  }
+  50% {
+    transform: translateY(-10px) scale(1.08);
+  }
+}
+
+.suggestion-pop {
+  animation: suggestion-pop 0.45s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+@keyframes suggestion-pop {
+  from {
+    opacity: 0;
+    transform: scale(0.85) translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
 /* ── Postcard frame ── */
 .postcard-frame {
   animation: postcard-enter 0.7s cubic-bezier(0.16, 1, 0.3, 1) both;

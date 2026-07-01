@@ -35,10 +35,10 @@ export function StepTimes() {
             key={d.date}
             type="button"
             onClick={() => setActiveDate(d.date)}
-            className={`px-5 py-2.5 rounded-full text-sm font-medium ${
+            className={`px-5 py-2.5 rounded-full text-sm font-medium transition-all duration-200 ${
               activeDate === d.date
-                ? 'bg-indigo-500 text-white'
-                : 'bg-white/5 text-white/60 border border-white/10'
+                ? 'pill-button-primary !py-2.5 !px-5 scale-105'
+                : 'bg-white/10 text-white/60 border border-white/15 hover:bg-white/12'
             }`}
           >
             {formatDate(d.date).split(',')[0]}
@@ -61,7 +61,9 @@ export function StepTimes() {
                   type="button"
                   onClick={() => handleTimeToggle(time)}
                   className={`px-5 py-2.5 rounded-full text-sm font-medium ${
-                    isSelected ? 'bg-indigo-500 text-white' : 'bg-white/5 text-white/60 border border-white/10'
+                    isSelected
+                      ? 'pill-button-primary !py-2.5 !px-5 suggestion-pop'
+                      : 'bg-white/10 text-white/60 border border-white/15 hover:bg-theme-soft hover:scale-105 transition-all suggestion-pop'
                   }`}
                 >
                   {time}

@@ -63,7 +63,7 @@ export function StepName() {
                 <button
                   key={item.label}
                   onClick={() => handleSuggestion(item.label)}
-                  className="flex items-center gap-2 px-5 py-3 rounded-full bg-white/5 border border-white/10 text-white/70 hover:bg-white/10 hover:text-white hover:scale-[1.03] transition-all duration-200 text-sm font-medium animate-in fade-in slide-in-from-bottom-2 fill-mode-both"
+                  className="flex items-center gap-2 px-5 py-3 rounded-full bg-white/10 border border-white/15 text-white/80 hover:bg-theme-soft hover:text-white hover:border-theme hover:scale-[1.05] transition-all duration-200 text-sm font-medium suggestion-pop"
                   style={{ animationDelay: `${index * 80}ms` }}
                 >
                   <Icon className="h-4 w-4" strokeWidth={1.5} />
