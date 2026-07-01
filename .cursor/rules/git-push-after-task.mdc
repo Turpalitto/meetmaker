@@ -1,0 +1,15 @@
+---
+description: Push changes to GitHub at the end of every completed task
+alwaysApply: true
+---
+
+# Git Push After Task
+
+When a task is completed and the project has meaningful changes:
+
+1. Stage and commit with a clear message (only when the user has not forbidden commits).
+2. Push to the remote GitHub repository (`git push` or `gh` as appropriate).
+3. If there is no remote yet, create the GitHub repo and set `origin`.
+4. If authentication is missing, run `gh auth login` or configure SSH/HTTPS credentials, then push.
+
+Do not leave completed work only on the local machine when a push was requested or implied.
