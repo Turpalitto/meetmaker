@@ -1,9 +1,11 @@
 ---
-description: Push changes to GitHub at the end of every completed task
+description: Push changes to GitHub at the end of every completed task (today 2026-07-01)
 alwaysApply: true
 ---
 
-# Git Push After Task
+# Git Push After Task (Today Only — 2026-07-01)
+
+**Valid only on July 1, 2026.**
 
 When a task is completed and the project has meaningful changes:
 
