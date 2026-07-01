@@ -26,14 +26,14 @@ export function ThemeAwareBackground({
   const decorationsOn =
     showDecorations && (themeProp != null || currentStep >= 4 || isComplete);
 
+  const decorIntensity =
+    themeProp != null ? "bold" : currentStep >= 4 || isComplete ? "bold" : "normal";
+
   return (
     <>
       <AuroraBackground theme={theme} className="-z-10" />
       {decorationsOn && (
-        <ThemeDecorations
-          theme={theme}
-          intensity={themeProp ? "normal" : "subtle"}
-        />
+        <ThemeDecorations theme={theme} intensity={decorIntensity} />
       )}
     </>
   );

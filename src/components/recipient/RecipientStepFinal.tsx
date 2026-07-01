@@ -2,6 +2,7 @@
 
 import { useMeetingStore } from '@/store/useMeetingStore';
 import { ConfettiBurst } from '@/components/ConfettiBurst';
+import { PostcardFrame } from '@/components/PostcardFrame';
 import { downloadICS, formatDate, formatTime } from '@/lib/utils';
 import { getThemeConfig } from '@/lib/themes';
 import { Calendar, Check, Download, MapPin } from 'lucide-react';
@@ -15,47 +16,79 @@ export function RecipientStepFinal() {
   const config = getThemeConfig(card.theme);
 
   return (
-    <div className="relative w-full text-center">
+    <div className="relative w-full py-4">
       <ConfettiBurst theme={card.theme} />
 
-      <div className="success-pop w-20 h-20 rounded-full bg-gradient-to-br from-green-400 to-emerald-500 flex items-center justify-center mx-auto mb-8 shadow-lg shadow-green-500/30">
-        <Check className="h-10 w-10 text-white" strokeWidth={2.5} />
-      </div>
-
-      <h2 className="text-3xl font-bold text-white mb-2">
-        Готово! {config.emoji}
-      </h2>
-      <p className="text-white/40 mb-2">Твой выбор отправлен</p>
-      <p className="text-white/25 text-sm mb-8">
-        Организатор увидит ответ на странице статуса
-      </p>
-
-      <div className="glass-card-dark rounded-3xl p-6 mb-8 text-left space-y-3 theme-card-selected border animate-in fade-in duration-500 delay-200 fill-mode-both">
-        <p className="text-white/50 text-sm">{card.title}</p>
-        <div className="flex items-center gap-3 text-white">
-          <Calendar className="h-5 w-5 text-theme shrink-0" />
-          {formatDate(recipientChoice.date)}
+      <PostcardFrame theme={card.theme} ribbon>
+        <div className="success-badge success-pop">
+          <Check className="h-10 w-10 text-white" strokeWidth={2.5} />
         </div>
-        <div className="flex items-center gap-3 text-white">
-          <Clock className="h-5 w-5 text-theme shrink-0" />
-          {formatTime(recipientChoice.time)}
+
+        <div className="text-center mb-8">
+          <h2 className="text-4xl font-bold text-white mb-2 tracking-tight">
+            Готово! <span className="text-3xl">{config.emoji}</span>
+          </h2>
+          <p className="text-white/60 text-base">Твой выбор отправлен</p>
+          <p className="text-white/35 text-sm mt-2">{config.tagline}</p>
         </div>
-        {recipientChoice.place && (
-          <div className="flex items-center gap-3 text-white">
-            <MapPin className="h-5 w-5 text-theme shrink-0" />
-            {recipientChoice.place.name}
+
+        <p className="text-center text-lg font-semibold text-white/80 mb-5">
+          {card.title}
+        </p>
+
+        <div className="space-y-3 mb-8">
+          <div className="detail-row animate-in fade-in slide-in-from-left-2 duration-400 fill-mode-both">
+            <div className="detail-row-icon">
+              <Calendar className="h-5 w-5 text-theme" />
+            </div>
+            <div className="text-left">
+              <p className="text-white/40 text-xs uppercase tracking-wide">Дата</p>
+              <p className="text-white font-medium">{formatDate(recipientChoice.date)}</p>
+            </div>
           </div>
-        )}
-      </div>
 
-      <button
-        type="button"
-        onClick={() => downloadICS(recipientChoice, card.title)}
-        className="pill-button pill-button-secondary w-full flex items-center justify-center gap-2"
-      >
-        <Download className="h-4 w-4" />
-        Добавить в календарь
-      </button>
+          <div
+            className="detail-row animate-in fade-in slide-in-from-left-2 duration-400 fill-mode-both"
+            style={{ animationDelay: '80ms' }}
+          >
+            <div className="detail-row-icon">
+              <Clock className="h-5 w-5 text-theme" />
+            </div>
+            <div className="text-left">
+              <p className="text-white/40 text-xs uppercase tracking-wide">Время</p>
+              <p className="text-white font-medium">{formatTime(recipientChoice.time)}</p>
+            </div>
+          </div>
+
+          {recipientChoice.place && (
+            <div
+              className="detail-row animate-in fade-in slide-in-from-left-2 duration-400 fill-mode-both"
+              style={{ animationDelay: '160ms' }}
+            >
+              <div className="detail-row-icon">
+                <MapPin className="h-5 w-5 text-theme" />
+              </div>
+              <div className="text-left">
+                <p className="text-white/40 text-xs uppercase tracking-wide">Место</p>
+                <p className="text-white font-medium">{recipientChoice.place.name}</p>
+              </div>
+            </div>
+          )}
+        </div>
+
+        <p className="text-center text-white/30 text-xs mb-5">
+          Организатор увидит ответ на странице статуса
+        </p>
+
+        <button
+          type="button"
+          onClick={() => downloadICS(recipientChoice, card.title)}
+          className="pill-button pill-button-primary w-full flex items-center justify-center gap-2"
+        >
+          <Download className="h-4 w-4" />
+          Добавить в календарь
+        </button>
+      </PostcardFrame>
     </div>
   );
 }

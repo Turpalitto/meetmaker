@@ -68,7 +68,7 @@ export default function StatusPage() {
   const currentIdx = session ? statusIndex(session.status) : -1;
 
   return (
-    <main className="relative min-h-screen w-full overflow-hidden bg-black" data-theme={theme}>
+    <main className="scene-page scene-vignette relative min-h-screen w-full overflow-hidden" data-theme={theme}>
       <AuroraBackground theme={theme} />
       <ThemeDecorations theme={theme} intensity="subtle" />
       <div className="relative z-10 min-h-screen px-6 py-12">

@@ -49,10 +49,10 @@ export default function CardPage() {
   const theme = currentSession?.card.theme || 'minimal';
 
   return (
-    <main className="relative min-h-screen w-full bg-black" data-theme={theme}>
+    <main className="scene-page scene-vignette relative min-h-screen w-full" data-theme={theme}>
       <AuroraBackground theme={theme} className="-z-10" />
-      <ThemeDecorations theme={theme} />
-      <div className="relative z-10 min-h-screen flex flex-col items-center justify-center px-6">
+      <ThemeDecorations theme={theme} intensity="bold" />
+      <div className="relative z-10 min-h-screen flex flex-col items-center justify-center px-4 py-8">
         {loading && <p className="text-white/40 text-lg">Загрузка открытки…</p>}
         {!loading && notFound && <p className="text-white/40 text-lg">Открытка не найдена</p>}
         {!loading && currentSession && !notFound && <RecipientFlow />}

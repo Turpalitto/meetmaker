@@ -18,7 +18,7 @@ const CreatorWizard = dynamic(
 
 export default function CreatePage() {
   return (
-    <main className="relative min-h-screen w-full bg-black">
+    <main className="scene-page scene-vignette relative min-h-screen w-full">
       <ThemeAwareBackground />
       <CreatorWizard />
     </main>

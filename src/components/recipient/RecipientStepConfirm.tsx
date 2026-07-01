@@ -4,6 +4,8 @@ import { useState } from 'react';
 import { useMeetingStore } from '@/store/useMeetingStore';
 import { submitRecipientChoice } from '@/lib/api';
 import { formatDate, formatTime } from '@/lib/utils';
+import { getThemeConfig } from '@/lib/themes';
+import { PostcardFrame } from '@/components/PostcardFrame';
 import { Calendar, Clock, Loader2, MapPin, Pencil } from 'lucide-react';
 import { StaggerItem } from '@/components/StepTransition';
 
@@ -18,11 +20,13 @@ export function RecipientStepConfirm() {
 
   if (!card || !selectedDate || !selectedTime) return null;
 
+  const config = getThemeConfig(card.theme);
+
   const rows = [
-    { icon: Calendar, label: formatDate(selectedDate) },
-    { icon: Clock, label: formatTime(selectedTime) },
+    { icon: Calendar, label: 'Дата', value: formatDate(selectedDate) },
+    { icon: Clock, label: 'Время', value: formatTime(selectedTime) },
     ...(selectedPlace
-      ? [{ icon: MapPin, label: selectedPlace.name }]
+      ? [{ icon: MapPin, label: 'Место', value: selectedPlace.name }]
       : []),
   ];
 
@@ -41,18 +45,27 @@ export function RecipientStepConfirm() {
   };
 
   return (
-    <div className="w-full text-center">
-      <h2 className="text-3xl font-bold text-white mb-8">Всё верно?</h2>
-      <div className="glass-card-dark rounded-3xl p-6 mb-6 text-left space-y-4">
+    <PostcardFrame theme={card.theme} ribbon size="md">
+      <div className="text-center mb-6">
+        <p className="text-white/40 text-xs uppercase tracking-[0.2em] mb-2">
+          {config.emoji} Проверь
+        </p>
+        <h2 className="text-3xl font-bold text-white">Всё верно?</h2>
+      </div>
+
+      <div className="space-y-3 mb-6">
         {rows.map((row, index) => {
           const Icon = row.icon;
           return (
             <StaggerItem key={index} index={index}>
-              <div className="flex items-center gap-3 text-white">
-                <div className="w-9 h-9 rounded-xl bg-theme-soft flex items-center justify-center shrink-0">
-                  <Icon className="h-4 w-4 text-theme" />
+              <div className="detail-row">
+                <div className="detail-row-icon">
+                  <Icon className="h-5 w-5 text-theme" />
                 </div>
-                <span className="font-medium">{row.label}</span>
+                <div className="text-left flex-1">
+                  <p className="text-white/40 text-xs uppercase tracking-wide">{row.label}</p>
+                  <p className="text-white font-medium">{row.value}</p>
+                </div>
               </div>
             </StaggerItem>
           );
@@ -62,7 +75,7 @@ export function RecipientStepConfirm() {
       <button
         type="button"
         onClick={() => setRecipientStep(2)}
-        className="inline-flex items-center gap-1 text-white/35 text-sm mb-6 hover:text-white/60 transition-colors"
+        className="inline-flex items-center gap-1 text-white/35 text-sm mb-5 hover:text-white/60 transition-colors w-full justify-center"
       >
         <Pencil className="h-3.5 w-3.5" />
         Изменить
@@ -83,6 +96,6 @@ export function RecipientStepConfirm() {
           'Подтвердить встречу'
         )}
       </button>
-    </div>
+    </PostcardFrame>
   );
 }

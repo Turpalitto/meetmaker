@@ -10,12 +10,14 @@ interface ConfettiBurstProps {
 }
 
 export function ConfettiBurst({ theme, active = true }: ConfettiBurstProps) {
-  const stickers = useMemo(() => {
+  const particles = useMemo(() => {
     const pool = getThemeConfig(theme).stickers;
-    return Array.from({ length: 12 }, (_, i) => ({
+    return Array.from({ length: 24 }, (_, i) => ({
       emoji: pool[i % pool.length],
-      left: `${8 + (i * 7) % 84}%`,
-      delay: `${i * 0.12}s`,
+      left: `${4 + ((i * 17) % 92)}%`,
+      top: `${5 + ((i * 11) % 40)}%`,
+      delay: `${i * 0.08}s`,
+      size: i % 3 === 0 ? "text-3xl" : i % 3 === 1 ? "text-2xl" : "text-xl",
     }));
   }, [theme]);
 
@@ -23,10 +25,15 @@ export function ConfettiBurst({ theme, active = true }: ConfettiBurstProps) {
 
   return (
     <div className="confetti-burst" aria-hidden>
-      {stickers.map((s, i) => (
+      {particles.map((s, i) => (
         <span
           key={i}
-          style={{ left: s.left, top: "10%", animationDelay: s.delay }}
+          className={`sticker-glow ${s.size}`}
+          style={{
+            left: s.left,
+            top: s.top,
+            animationDelay: s.delay,
+          }}
         >
           {s.emoji}
         </span>
