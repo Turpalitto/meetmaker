@@ -8,7 +8,7 @@ interface StepTransitionProps {
   className?: string;
 }
 
-/** CSS-only step entrance — safe for client-only flows (no opacity:0 stuck). */
+/** M3 emphasized entrance — CSS only, no stuck opacity */
 export function StepTransition({
   stepKey,
   children,
@@ -17,10 +17,8 @@ export function StepTransition({
   return (
     <div
       key={stepKey}
-      className={cn(
-        "animate-in fade-in slide-in-from-bottom-4 duration-500 fill-mode-both",
-        className,
-      )}
+      className={cn("md-reveal", className)}
+      style={{ animationDuration: "0.45s" }}
     >
       {children}
     </div>
@@ -36,11 +34,11 @@ interface StaggerItemProps {
 export function StaggerItem({ index, children, className }: StaggerItemProps) {
   return (
     <div
-      className={cn(
-        "animate-in fade-in slide-in-from-bottom-2 duration-400 fill-mode-both",
-        className,
-      )}
-      style={{ animationDelay: `${index * 70}ms` }}
+      className={cn("md-reveal", className)}
+      style={{
+        animationDelay: `${index * 60}ms`,
+        animationDuration: "0.4s",
+      }}
     >
       {children}
     </div>

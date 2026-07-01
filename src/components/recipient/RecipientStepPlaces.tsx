@@ -2,8 +2,7 @@
 
 import { useState } from 'react';
 import { useMeetingStore } from '@/store/useMeetingStore';
-import { Check, MapPin, Plus } from 'lucide-react';
-import { StaggerItem } from '@/components/StepTransition';
+import { Check, MapPin, Plus, ChevronRight } from 'lucide-react';
 
 export function RecipientStepPlaces() {
   const card = useMeetingStore((s) => s.currentSession?.card);
@@ -20,27 +19,29 @@ export function RecipientStepPlaces() {
   };
 
   return (
-    <div className="w-full text-center">
-      <h2 className="text-3xl font-bold text-white mb-3">Где встретимся?</h2>
-      <p className="text-white/30 text-sm mb-8">Выбери место или предложи своё</p>
+    <div className="w-full pt-10">
+      <div className="ios-screen-header mb-6">
+        <h2 className="ios-large-title">Где встретимся?</h2>
+        <p className="ios-footnote mt-2">Выбери место или предложи своё</p>
+      </div>
 
       {card.places.length > 0 && (
-        <div className="space-y-3 mb-6">
-          {card.places.map((place, index) => (
-            <StaggerItem key={place.id} index={index}>
+        <div className="ios-group mb-4">
+          <p className="ios-section-header">Места</p>
+          <div className="ios-grouped-card divide-y divide-ios-separator">
+            {card.places.map((place) => (
               <button
+                key={place.id}
                 type="button"
                 onClick={() => pick(place)}
-                className="w-full date-card flex items-center gap-4 p-5 text-left group"
+                className="ios-cell-button"
               >
-                <div className="w-10 h-10 rounded-xl bg-theme-soft flex items-center justify-center shrink-0">
-                  <MapPin className="h-5 w-5 text-theme" />
-                </div>
-                <span className="text-white font-semibold text-lg flex-1 text-left">{place.name}</span>
-                <Chevron />
+                <MapPin className="h-5 w-5 text-theme shrink-0" strokeWidth={2} />
+                <span className="ios-cell-title flex-1 text-left">{place.name}</span>
+                <ChevronRight className="h-5 w-5 ios-cell-chevron" strokeWidth={2} />
               </button>
-            </StaggerItem>
-          ))}
+            ))}
+          </div>
         </div>
       )}
 
@@ -48,54 +49,45 @@ export function RecipientStepPlaces() {
         <button
           type="button"
           onClick={() => setCustomMode(true)}
-          className="dashed-custom-toggle w-full flex items-center justify-center gap-2 py-4 text-white/50 hover:text-white/80 mb-4"
+          className="ios-btn-gray w-full mb-4 gap-2"
         >
           <Plus className="h-4 w-4" />
           Своё место
         </button>
       ) : (
-        <div className="animate-in fade-in slide-in-from-bottom-2 duration-300 mb-4">
-          <input
-            type="text"
-            value={localCustom}
-            onChange={(e) => setLocalCustom(e.target.value)}
-            placeholder="Напиши адрес или название"
-            className="premium-input mb-3"
-            autoFocus
-          />
+        <div className="ios-group mb-4">
+          <p className="ios-section-header">Своё место</p>
+          <div className="ios-grouped-card p-1 mb-3">
+            <input
+              type="text"
+              value={localCustom}
+              onChange={(e) => setLocalCustom(e.target.value)}
+              placeholder="Адрес или название"
+              className="ios-input-field"
+              autoFocus
+            />
+          </div>
           <button
             type="button"
             onClick={() => localCustom.trim() && pick({ id: 'custom', name: localCustom.trim(), custom: true })}
             disabled={!localCustom.trim()}
-            className="pill-button pill-button-primary w-full disabled:opacity-40"
+            className="ios-btn-filled w-full gap-2 disabled:opacity-40"
           >
-            <Check className="h-4 w-4 inline mr-1" />
+            <Check className="h-4 w-4" />
             Продолжить
           </button>
         </div>
       )}
 
       {card.places.length === 0 && !customMode && (
-        <button type="button" onClick={() => pick(null)} className="text-theme text-sm hover:opacity-80">
+        <button type="button" onClick={() => pick(null)} className="ios-btn-plain mx-auto block mb-4">
           Пропустить
         </button>
       )}
 
-      <button
-        type="button"
-        onClick={() => setRecipientStep(1)}
-        className="block mx-auto mt-6 text-white/30 text-sm hover:text-white/60 transition-colors"
-      >
-        ← Назад
+      <button type="button" onClick={() => setRecipientStep(1)} className="ios-btn-plain mx-auto block">
+        Назад
       </button>
     </div>
-  );
-}
-
-function Chevron() {
-  return (
-    <svg className="h-5 w-5 text-white/20 group-hover:text-theme transition-colors" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}>
-      <path d="M9 18l6-6-6-6" />
-    </svg>
   );
 }

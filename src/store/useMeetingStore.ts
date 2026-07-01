@@ -6,6 +6,7 @@ import type {
   MeetingSession,
   RecipientChoice,
   Place,
+  CardAppearance,
 } from "@/types";
 
 function generateId(): string {
@@ -19,6 +20,9 @@ export const useMeetingStore = create<StoreState>((set, get) => ({
   currentPlaceInput: "",
   places: [],
   selectedTheme: "romantic",
+  recipientName: "",
+  personalNote: "",
+  cardAppearance: "light",
 
   recipientStep: -1,
   selectedDate: null,
@@ -90,6 +94,9 @@ export const useMeetingStore = create<StoreState>((set, get) => ({
   },
 
   setSelectedTheme: (theme) => set({ selectedTheme: theme }),
+  setRecipientName: (name) => set({ recipientName: name }),
+  setPersonalNote: (note) => set({ personalNote: note }),
+  setCardAppearance: (appearance) => set({ cardAppearance: appearance }),
 
   resetCreator: () =>
     set({
@@ -99,6 +106,9 @@ export const useMeetingStore = create<StoreState>((set, get) => ({
       currentPlaceInput: "",
       places: [],
       selectedTheme: "romantic",
+      recipientName: "",
+      personalNote: "",
+      cardAppearance: "light",
     }),
 
   setRecipientStep: (step) => set({ recipientStep: step }),
@@ -144,7 +154,15 @@ export const useMeetingStore = create<StoreState>((set, get) => ({
   },
 
   updateSessionFromCard: async () => {
-    const { meetingTitle, dates, places, selectedTheme } = get();
+    const {
+      meetingTitle,
+      dates,
+      places,
+      selectedTheme,
+      recipientName,
+      personalNote,
+      cardAppearance,
+    } = get();
     const card: MeetingCard = {
       id: generateId(),
       title: meetingTitle,
@@ -152,6 +170,9 @@ export const useMeetingStore = create<StoreState>((set, get) => ({
       places,
       theme: selectedTheme,
       createdAt: new Date().toISOString(),
+      recipientName: recipientName.trim() || undefined,
+      personalNote: personalNote.trim() || undefined,
+      appearance: cardAppearance,
     };
 
     set({ isSaving: true });

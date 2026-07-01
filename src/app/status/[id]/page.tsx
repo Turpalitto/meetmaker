@@ -4,8 +4,9 @@ import { useEffect, useState } from 'react';
 import { useParams } from 'next/navigation';
 import Link from 'next/link';
 import { AuroraBackground } from '@/components/AuroraBackground';
-import { ThemeDecorations } from '@/components/ThemeDecorations';
+import { PostcardFrame } from '@/components/PostcardFrame';
 import { fetchCard } from '@/lib/api';
+import { resolveCardAppearance } from '@/lib/appearance';
 import { choiceToLabel, formatDateShort } from '@/lib/utils';
 import type { MeetingSession, MeetingStatus } from '@/types';
 import {
@@ -23,11 +24,11 @@ const STATUS_STEPS: {
   label: string;
   icon: typeof Sparkles;
 }[] = [
-  { key: 'created', label: 'Открытка создана', icon: Sparkles },
-  { key: 'link_opened', label: 'Ссылка открыта', icon: Link2 },
-  { key: 'recipient_choosing', label: 'Получатель выбирает', icon: Clock },
-  { key: 'response_received', label: 'Ответ получен', icon: MessageSquare },
-  { key: 'confirmed', label: 'Встреча подтверждена', icon: UserCheck },
+  { key: 'created', label: 'Открытка готова', icon: Sparkles },
+  { key: 'link_opened', label: 'Приглашение открыто', icon: Link2 },
+  { key: 'recipient_choosing', label: 'Ждём ответ', icon: Clock },
+  { key: 'response_received', label: 'Выбор получен', icon: MessageSquare },
+  { key: 'confirmed', label: 'Встреча согласована', icon: UserCheck },
 ];
 
 function statusIndex(status: MeetingStatus): number {
@@ -64,119 +65,108 @@ export default function StatusPage() {
     return () => clearInterval(interval);
   }, [id]);
 
-  const theme = session?.card.theme ?? 'minimal';
+  const theme = session?.card.theme ?? 'romantic';
+  const appearance = resolveCardAppearance(session?.card);
   const currentIdx = session ? statusIndex(session.status) : -1;
 
   return (
-    <main className="scene-page scene-vignette relative min-h-screen w-full overflow-hidden" data-theme={theme}>
+    <main
+      className="scene-page relative min-h-screen w-full overflow-hidden"
+      data-theme={theme}
+      data-appearance={appearance}
+    >
       <AuroraBackground theme={theme} />
-      <ThemeDecorations theme={theme} intensity="subtle" />
-      <div className="relative z-10 min-h-screen px-6 py-12">
-        <div className="max-w-md mx-auto">
-          <Link
-            href="/"
-            className="inline-flex items-center gap-1 text-white/30 hover:text-white/60 text-sm mb-8 transition-colors"
-          >
-            <ArrowLeft className="h-3.5 w-3.5" />
-            На главную
-          </Link>
 
-          {loading && (
-            <p className="text-white/40 text-center">Загрузка статуса…</p>
-          )}
+      <div className="relative z-10 min-h-screen px-5 py-10 max-w-lg mx-auto">
+        <Link href="/" className="md-text-button mb-6 md-reveal">
+          <ArrowLeft className="h-4 w-4" />
+          На главную
+        </Link>
 
-          {!loading && !session && (
-            <p className="text-white/40 text-center">Открытка не найдена</p>
-          )}
+        {loading && (
+          <div className="md-reveal">
+            <div className="md-linear-progress mb-6">
+              <div className="md-linear-progress-bar" style={{ width: '40%' }} />
+            </div>
+            <p className="md-body-muted text-center">Загрузка статуса…</p>
+          </div>
+        )}
 
-          {session && (
-            <div className="animate-in fade-in slide-in-from-bottom-4 duration-500">
-              <h1 className="text-3xl font-bold text-white mb-2">
-                {session.card.title}
-              </h1>
-              <p className="text-white/40 text-sm mb-8">
-                Статус встречи
-              </p>
+        {!loading && !session && (
+          <PostcardFrame theme="minimal" variant="filled" size="md">
+            <p className="md-body-muted text-center md-reveal">Открытка не найдена</p>
+          </PostcardFrame>
+        )}
 
-              <div className="glass-card-dark rounded-3xl p-6 mb-8">
-                <div className="space-y-0">
-                  {STATUS_STEPS.map((step, index) => {
-                    const done = index <= currentIdx;
-                    const active = index === currentIdx;
-                    const Icon = step.icon;
-                    return (
-                      <div key={step.key} className="flex gap-4">
-                        <div className="flex flex-col items-center">
-                          <div
-                            className={`w-10 h-10 rounded-full flex items-center justify-center border-2 transition-colors ${
-                              done
-                                ? 'text-white border-transparent'
-                                : 'border-white/15 text-white/25'
-                            }`}
-                            style={
-                              done
-                                ? {
-                                    background: 'var(--mm-accent)',
-                                    borderColor: 'var(--mm-accent)',
-                                  }
-                                : undefined
-                            }
-                          >
-                            {done ? (
-                              <Check className="h-5 w-5" strokeWidth={2.5} />
-                            ) : (
-                              <Icon className="h-4 w-4" strokeWidth={1.5} />
-                            )}
-                          </div>
-                          {index < STATUS_STEPS.length - 1 && (
-                            <div
-                              className={`w-0.5 h-8 my-1 ${
-                                index < currentIdx ? '' : 'bg-white/10'
-                              }`}
-                              style={
-                                index < currentIdx
-                                  ? { background: 'var(--mm-accent)' }
-                                  : undefined
-                              }
-                            />
+        {session && (
+          <>
+            <div className="mb-8 md-reveal">
+              <p className="md-overline mb-1">Статус встречи</p>
+              <h1 className="md-headline-emphasis">{session.card.title}</h1>
+            </div>
+
+            <PostcardFrame theme={theme} variant="elevated" ribbon appearance={appearance} className="mb-6">
+              <div className="space-y-0">
+                {STATUS_STEPS.map((step, index) => {
+                  const done = index <= currentIdx;
+                  const active = index === currentIdx;
+                  const Icon = step.icon;
+                  return (
+                    <div
+                      key={step.key}
+                      className="flex gap-4 md-reveal"
+                      style={{ animationDelay: `${120 + index * 80}ms` }}
+                    >
+                      <div className="flex flex-col items-center">
+                        <div
+                          className={`md-status-node ${done ? 'md-status-node--done' : ''} ${active ? 'md-status-node--active' : ''}`}
+                        >
+                          {done ? (
+                            <Check className="h-5 w-5" strokeWidth={2.5} />
+                          ) : (
+                            <Icon className="h-4 w-4" strokeWidth={1.75} />
                           )}
                         </div>
-                        <div className={`pb-6 ${active ? '' : 'opacity-60'}`}>
-                          <p
-                            className={`font-medium ${
-                              active ? 'text-white' : 'text-white/60'
-                            }`}
-                          >
-                            {step.label}
-                          </p>
-                        </div>
+                        {index < STATUS_STEPS.length - 1 && (
+                          <div
+                            className={`md-status-connector ${index < currentIdx ? 'md-status-connector--done' : ''}`}
+                          />
+                        )}
                       </div>
-                    );
-                  })}
-                </div>
+                      <div className={`pb-5 pt-1.5 flex-1 ${active ? '' : 'opacity-70'}`}>
+                        <p className={`md-list-title ${active ? '!text-[#e6e0e9]' : ''}`}>
+                          {step.label}
+                        </p>
+                        {active && index < STATUS_STEPS.length - 1 && (
+                          <p className="md-list-subtitle mt-0.5">Сейчас здесь</p>
+                        )}
+                      </div>
+                    </div>
+                  );
+                })}
               </div>
+            </PostcardFrame>
 
-              {session.recipientChoice && (
-                <div className="glass-card-dark rounded-3xl p-6 mb-8">
-                  <p className="text-white/40 text-sm mb-2">Выбор получателя</p>
-                  <p className="text-white text-lg font-semibold">
-                    {choiceToLabel(session.recipientChoice)}
-                  </p>
-                  <p className="text-white/30 text-xs mt-2">
-                    {formatDateShort(session.recipientChoice.date)}
-                  </p>
-                </div>
-              )}
+            {session.recipientChoice && (
+              <PostcardFrame theme={theme} variant="filled" size="md" className="mb-6">
+                <p className="md-overline mb-2 md-reveal">Выбор получателя</p>
+                <p className="md-list-title md-reveal md-reveal-d1">
+                  {choiceToLabel(session.recipientChoice)}
+                </p>
+                <p className="md-list-subtitle mt-1 md-reveal md-reveal-d2">
+                  {formatDateShort(session.recipientChoice.date)}
+                </p>
+              </PostcardFrame>
+            )}
 
-              <Link
-                href={`/card/${session.card.id}`}
-                className="pill-button pill-button-primary w-full flex items-center justify-center"
-              >
-                Открыть открытку
-              </Link>
-            </div>
-          )}
-        </div>
+            <Link
+              href={`/card/${session.card.id}`}
+              className="md-filled-button w-full py-3 text-center md-reveal md-reveal-d4"
+            >
+              Открыть открытку
+            </Link>
+          </>
+        )}
       </div>
     </main>
   );

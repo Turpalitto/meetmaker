@@ -16,24 +16,29 @@ import type { ThemeType } from '@/types';
 const TOTAL_STEPS = 5;
 
 const stepTitles = [
-  { title: 'О чём встреча?', subtitle: 'Кофе, прогулка, кино — как душе угодно' },
-  { title: 'Когда удобно?', subtitle: 'Предложи несколько дат — пусть выберет' },
+  { title: 'Расскажи о встрече', subtitle: 'Название, обращение и пару тёплых слов' },
+  { title: 'Когда тебе удобно?', subtitle: 'Предложи несколько дат — пусть выберет' },
   { title: 'Во сколько?', subtitle: 'Добавь варианты времени на каждый день' },
   { title: 'Где встретитесь?', subtitle: 'Любимые места или новые открытия' },
-  { title: 'Настроение открытки', subtitle: 'Какой вайб хочешь передать?' },
+  { title: 'Какое настроение?', subtitle: 'Свидание, кофе или прогулка' },
 ];
 
 export function CreatorWizard() {
   const currentStep = useMeetingStore((s) => s.currentStep);
   const selectedTheme = useMeetingStore((s) => s.selectedTheme);
+  const cardAppearance = useMeetingStore((s) => s.cardAppearance);
   const isComplete = currentStep >= TOTAL_STEPS;
 
   const theme: ThemeType = selectedTheme;
 
   return (
-    <div className="relative isolate min-h-screen" data-theme={theme}>
+    <div
+      className="relative isolate min-h-screen"
+      data-theme={theme}
+      data-appearance={cardAppearance}
+    >
       {!isComplete && (
-        <div className="fixed top-0 left-0 right-0 z-[100] px-6 pt-8 pb-4 pointer-events-none">
+        <div className="fixed top-0 left-0 right-0 z-[100] px-5 pt-[max(0.75rem,env(safe-area-inset-top))] pb-2 pointer-events-none">
           <div className="max-w-md mx-auto pointer-events-auto">
             <StepIndicator currentStep={currentStep} totalSteps={TOTAL_STEPS} />
           </div>
@@ -88,7 +93,9 @@ export function CreatorWizard() {
 
         {isComplete && (
           <StepTransition stepKey="ready" className="min-h-screen flex flex-col items-center justify-center px-6 py-12">
-            <StepReady />
+            <StepChoiceAmbience step={4} celebrate>
+              <StepReady />
+            </StepChoiceAmbience>
           </StepTransition>
         )}
       </div>

@@ -1,6 +1,7 @@
 'use client';
 
 import { useMeetingStore } from '@/store/useMeetingStore';
+import { WizardActions } from '@/components/WizardActions';
 import { Plus, X, MapPin } from 'lucide-react';
 
 const PLACE_SUGGESTIONS = [
@@ -25,75 +26,74 @@ export function StepPlaces() {
 
   return (
     <div className="w-full max-w-md">
-      <div className="relative mb-6">
-        <MapPin className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-white/30" />
-        <input
-          type="text"
-          value={currentPlaceInput}
-          onChange={(e) => setCurrentPlaceInput(e.target.value)}
-          onKeyDown={(e) => {
-            if (e.key === 'Enter' && currentPlaceInput.trim()) {
-              handleAddPlace(currentPlaceInput.trim());
-            }
-          }}
-          placeholder="Введите место встречи..."
-          className="premium-input pl-12 pr-12"
-          autoFocus
-        />
-        {currentPlaceInput.trim() && (
-          <button
-            type="button"
-            onClick={() => handleAddPlace(currentPlaceInput.trim())}
-            className="absolute right-3 top-1/2 -translate-y-1/2 p-2 rounded-full text-white"
-            style={{ background: 'var(--mm-accent)' }}
-          >
-            <Plus className="h-4 w-4" />
-          </button>
-        )}
+      <div className="ios-group mb-4">
+        <p className="ios-section-header">Место</p>
+        <div className="ios-grouped-card flex items-center pr-2">
+          <MapPin className="h-5 w-5 text-theme ml-3 shrink-0" strokeWidth={2} />
+          <input
+            type="text"
+            value={currentPlaceInput}
+            onChange={(e) => setCurrentPlaceInput(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter' && currentPlaceInput.trim()) {
+                handleAddPlace(currentPlaceInput.trim());
+              }
+            }}
+            placeholder="Введите место встречи"
+            className="ios-input-field flex-1"
+            autoFocus
+          />
+          {currentPlaceInput.trim() && (
+            <button
+              type="button"
+              onClick={() => handleAddPlace(currentPlaceInput.trim())}
+              className="ios-checkmark !w-8 !h-8"
+            >
+              <Plus className="h-4 w-4 text-white" strokeWidth={2.5} />
+            </button>
+          )}
+        </div>
       </div>
 
-      <div className="flex flex-wrap justify-center gap-2 mb-8">
-        {PLACE_SUGGESTIONS.map((name) => (
-          <button
-            key={name}
-            type="button"
-            onClick={() => handleAddPlace(name)}
-            className="px-4 py-2 rounded-full bg-white/10 border border-white/15 text-white/70 hover:bg-theme-soft hover:scale-105 text-sm transition-all suggestion-pop"
-          >
-            + {name}
-          </button>
-        ))}
+      <div className="ios-group mb-6">
+        <p className="ios-section-header">Подсказки</p>
+        <div className="ios-grouped-card divide-y divide-ios-separator">
+          {PLACE_SUGGESTIONS.map((name) => (
+            <button
+              key={name}
+              type="button"
+              onClick={() => handleAddPlace(name)}
+              className="ios-cell-button"
+            >
+              <span className="ios-cell-title flex-1">{name}</span>
+              <Plus className="h-4 w-4 text-theme" strokeWidth={2} />
+            </button>
+          ))}
+        </div>
       </div>
 
       {places.length > 0 && (
-        <div className="space-y-3 mb-8">
-          {places.map((place) => (
-            <div key={place.id} className="date-card flex items-center gap-3">
-              <div className="w-10 h-10 rounded-xl bg-theme-soft flex items-center justify-center">
-                <MapPin className="h-5 w-5 text-theme" />
+        <div className="ios-group mb-6">
+          <p className="ios-section-header">Добавлено</p>
+          <div className="ios-grouped-card divide-y divide-ios-separator">
+            {places.map((place) => (
+              <div key={place.id} className="ios-cell-static">
+                <MapPin className="h-5 w-5 text-theme shrink-0" strokeWidth={2} />
+                <span className="ios-cell-title flex-1">{place.name}</span>
+                <button type="button" onClick={() => removePlace(place.id)} className="ios-btn-plain !min-h-0 !p-1 text-white/40">
+                  <X className="h-4 w-4" />
+                </button>
               </div>
-              <span className="flex-1 text-white font-medium">{place.name}</span>
-              <button type="button" onClick={() => removePlace(place.id)} className="p-2 text-white/40 hover:text-white">
-                <X className="h-4 w-4" />
-              </button>
-            </div>
-          ))}
+            ))}
+          </div>
         </div>
       )}
 
-      <div className="flex justify-center gap-3">
-        <button type="button" onClick={() => setCurrentStep(2)} className="rounded-full bg-white/5 border border-white/10 px-6 py-3 text-sm text-white/60">
-          Назад
-        </button>
-        <button
-          type="button"
-          onClick={() => setCurrentStep(4)}
-          disabled={places.length === 0}
-          className="rounded-full bg-white/10 px-8 py-3 text-base font-semibold text-white border border-white/20 disabled:opacity-30"
-        >
-          Продолжить
-        </button>
-      </div>
+      <WizardActions
+        onBack={() => setCurrentStep(2)}
+        onContinue={() => setCurrentStep(4)}
+        continueDisabled={places.length === 0}
+      />
     </div>
   );
 }

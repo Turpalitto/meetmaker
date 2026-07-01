@@ -6,7 +6,10 @@ create table if not exists public.meeting_cards (
   title text not null,
   dates jsonb not null default '[]'::jsonb,
   places jsonb not null default '[]'::jsonb,
-  theme text not null default 'minimal' check (theme in ('minimal', 'coffee', 'romantic')),
+  theme text not null default 'romantic' check (theme in ('minimal', 'coffee', 'romantic')),
+  recipient_name text,
+  personal_note text,
+  appearance text not null default 'light' check (appearance in ('light', 'dark')),
   status text not null default 'created' check (
     status in ('created', 'link_opened', 'recipient_choosing', 'response_received', 'confirmed')
   ),

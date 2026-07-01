@@ -3,7 +3,6 @@
 import { useMeetingStore } from '@/store/useMeetingStore';
 import { Calendar, ChevronRight } from 'lucide-react';
 import { formatDate } from '@/lib/utils';
-import { StaggerItem } from '@/components/StepTransition';
 
 export function RecipientStepDates() {
   const card = useMeetingStore((s) => s.currentSession?.card);
@@ -13,31 +12,39 @@ export function RecipientStepDates() {
   if (!card) return null;
 
   return (
-    <div className="w-full text-center">
-      <h2 className="text-3xl font-bold text-white mb-3">Когда тебе удобно?</h2>
-      <p className="text-white/30 text-sm mb-8">Выбери один из вариантов</p>
-      <div className="space-y-3">
-        {card.dates.map((d, index) => (
-          <StaggerItem key={d.date} index={index}>
+    <div className="w-full pt-10">
+      <div className="ios-screen-header mb-6">
+        <h2 className="ios-large-title">Когда удобно?</h2>
+        <p className="ios-footnote mt-2">Выбери один из вариантов</p>
+      </div>
+
+      <div className="ios-group">
+        <p className="ios-section-header">Даты</p>
+        <div className="ios-grouped-card divide-y divide-ios-separator">
+          {card.dates.map((d) => (
             <button
+              key={d.date}
               type="button"
               onClick={() => {
                 setSelectedDate(d.date);
                 setRecipientStep(1);
               }}
-              className="w-full date-card flex items-center gap-4 p-5 text-left group"
+              className="ios-cell-button"
             >
-              <div className="w-12 h-12 rounded-2xl bg-theme-soft flex items-center justify-center shrink-0">
-                <Calendar className="h-6 w-6 text-theme" />
+              <div
+                className="w-9 h-9 rounded-lg flex items-center justify-center shrink-0"
+                style={{ background: 'var(--mm-accent-soft)' }}
+              >
+                <Calendar className="h-5 w-5 text-theme" strokeWidth={2} />
               </div>
-              <div className="flex-1 text-left">
-                <p className="text-white font-semibold text-lg">{formatDate(d.date)}</p>
-                <p className="text-white/40 text-sm">{d.times.length} вариантов времени</p>
+              <div className="flex-1 min-w-0 text-left">
+                <p className="ios-cell-title">{formatDate(d.date)}</p>
+                <p className="ios-cell-subtitle">{d.times.length} вариантов времени</p>
               </div>
-              <ChevronRight className="h-5 w-5 text-white/20 group-hover:text-theme group-hover:translate-x-0.5 transition-all" />
+              <ChevronRight className="h-5 w-5 ios-cell-chevron" strokeWidth={2} />
             </button>
-          </StaggerItem>
-        ))}
+          ))}
+        </div>
       </div>
     </div>
   );

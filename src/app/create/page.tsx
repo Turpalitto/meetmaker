@@ -2,6 +2,7 @@
 
 import dynamic from 'next/dynamic';
 import { ThemeAwareBackground } from '@/components/ThemeAwareBackground';
+import { useMeetingStore } from '@/store/useMeetingStore';
 
 const CreatorWizard = dynamic(
   () =>
@@ -10,16 +11,23 @@ const CreatorWizard = dynamic(
     ssr: false,
     loading: () => (
       <div className="min-h-screen flex items-center justify-center">
-        <p className="text-white/50 text-lg animate-pulse">Загрузка…</p>
+        <p className="md-body-muted text-lg">Загрузка…</p>
       </div>
     ),
   },
 );
 
 export default function CreatePage() {
+  const theme = useMeetingStore((s) => s.selectedTheme);
+  const appearance = useMeetingStore((s) => s.cardAppearance);
+
   return (
-    <main className="scene-page scene-vignette relative min-h-screen w-full" data-theme="romantic">
-      <ThemeAwareBackground theme="romantic" />
+    <main
+      className="scene-page relative min-h-screen w-full"
+      data-theme={theme}
+      data-appearance={appearance}
+    >
+      <ThemeAwareBackground theme={theme} />
       <CreatorWizard />
     </main>
   );

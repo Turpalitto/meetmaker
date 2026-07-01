@@ -12,15 +12,15 @@ interface ThemeHeroIconProps {
 }
 
 const SIZES = {
-  md: "w-16 h-16 rounded-[22px]",
-  lg: "w-20 h-20 rounded-[28px]",
-  xl: "w-24 h-24 rounded-[32px]",
+  md: "w-16 h-16 rounded-2xl",
+  lg: "w-[72px] h-[72px] rounded-[20px]",
+  xl: "w-20 h-20 rounded-[22px]",
 };
 
 const ICON_SIZES = {
   md: "h-8 w-8",
-  lg: "h-10 w-10",
-  xl: "h-12 w-12",
+  lg: "h-9 w-9",
+  xl: "h-10 w-10",
 };
 
 export function ThemeHeroIcon({
@@ -32,24 +32,20 @@ export function ThemeHeroIcon({
   const config = getThemeConfig(theme);
   const Icon = config.icon;
 
-  const gradientClass =
-    theme === "coffee"
-      ? "from-amber-400 via-orange-400 to-rose-300"
-      : theme === "romantic"
-        ? "from-pink-400 via-rose-400 to-fuchsia-400"
-        : "from-violet-400 via-indigo-400 to-purple-500";
-
   return (
     <div
       className={cn(
-        "theme-hero-icon bg-gradient-to-br flex items-center justify-center mx-auto",
-        gradientClass,
+        "md-app-icon flex items-center justify-center mx-auto md-elevation-2",
         SIZES[size],
         celebrate && "success-pop",
         className,
       )}
+      style={{
+        backgroundColor: config.primaryContainer,
+        color: config.onPrimaryContainer,
+      }}
     >
-      <Icon className={cn("text-white", ICON_SIZES[size])} strokeWidth={1.5} />
+      <Icon className={ICON_SIZES[size]} strokeWidth={2} />
     </div>
   );
 }

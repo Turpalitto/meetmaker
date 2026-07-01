@@ -4,10 +4,8 @@ import { useState } from 'react';
 import { useMeetingStore } from '@/store/useMeetingStore';
 import { submitRecipientChoice } from '@/lib/api';
 import { formatDate, formatTime } from '@/lib/utils';
-import { getThemeConfig } from '@/lib/themes';
 import { PostcardFrame } from '@/components/PostcardFrame';
-import { Calendar, Clock, Loader2, MapPin, Pencil } from 'lucide-react';
-import { StaggerItem } from '@/components/StepTransition';
+import { Calendar, Clock, Loader2, MapPin } from 'lucide-react';
 
 export function RecipientStepConfirm() {
   const card = useMeetingStore((s) => s.currentSession?.card);
@@ -19,8 +17,6 @@ export function RecipientStepConfirm() {
   const [submitting, setSubmitting] = useState(false);
 
   if (!card || !selectedDate || !selectedTime) return null;
-
-  const config = getThemeConfig(card.theme);
 
   const rows = [
     { icon: Calendar, label: 'Дата', value: formatDate(selectedDate) },
@@ -45,57 +41,54 @@ export function RecipientStepConfirm() {
   };
 
   return (
-    <PostcardFrame theme={card.theme} ribbon size="md">
-      <div className="text-center mb-6">
-        <p className="text-white/40 text-xs uppercase tracking-[0.2em] mb-2">
-          {config.emoji} Проверь
-        </p>
-        <h2 className="text-3xl font-bold text-white">Всё верно?</h2>
-      </div>
+    <div className="pt-10">
+      <PostcardFrame theme={card.theme}>
+        <div className="ios-screen-header mb-5">
+          <h2 className="ios-large-title">Всё верно?</h2>
+          <p className="ios-footnote mt-2">Проверь детали встречи</p>
+        </div>
 
-      <div className="space-y-3 mb-6">
-        {rows.map((row, index) => {
-          const Icon = row.icon;
-          return (
-            <StaggerItem key={index} index={index}>
-              <div className="detail-row">
+        <div className="ios-grouped-card ios-detail-list mb-5">
+          {rows.map((row, index) => {
+            const Icon = row.icon;
+            return (
+              <div key={index} className="detail-row premium-detail">
                 <div className="detail-row-icon">
-                  <Icon className="h-5 w-5 text-theme" />
+                  <Icon className="h-4 w-4 text-theme" strokeWidth={2} />
                 </div>
                 <div className="text-left flex-1">
-                  <p className="text-white/40 text-xs uppercase tracking-wide">{row.label}</p>
-                  <p className="text-white font-medium">{row.value}</p>
+                  <p className="detail-label">{row.label}</p>
+                  <p className="detail-value">{row.value}</p>
                 </div>
               </div>
-            </StaggerItem>
-          );
-        })}
-      </div>
+            );
+          })}
+        </div>
 
-      <button
-        type="button"
-        onClick={() => setRecipientStep(2)}
-        className="inline-flex items-center gap-1 text-white/35 text-sm mb-5 hover:text-white/60 transition-colors w-full justify-center"
-      >
-        <Pencil className="h-3.5 w-3.5" />
-        Изменить
-      </button>
+        <button
+          type="button"
+          onClick={() => setRecipientStep(2)}
+          className="ios-btn-plain w-full justify-center mb-4"
+        >
+          Изменить
+        </button>
 
-      <button
-        type="button"
-        onClick={handleConfirm}
-        disabled={submitting}
-        className="pill-button pill-button-primary w-full flex items-center justify-center gap-2 disabled:opacity-60"
-      >
-        {submitting ? (
-          <>
-            <Loader2 className="h-4 w-4 animate-spin" />
-            Отправляем…
-          </>
-        ) : (
-          'Подтвердить встречу'
-        )}
-      </button>
-    </PostcardFrame>
+        <button
+          type="button"
+          onClick={handleConfirm}
+          disabled={submitting}
+          className="ios-btn-filled w-full gap-2 disabled:opacity-50"
+        >
+          {submitting ? (
+            <>
+              <Loader2 className="h-4 w-4 animate-spin" />
+              Отправляем…
+            </>
+          ) : (
+            'Подтвердить'
+          )}
+        </button>
+      </PostcardFrame>
+    </div>
   );
 }

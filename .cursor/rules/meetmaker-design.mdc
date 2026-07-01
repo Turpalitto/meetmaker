@@ -1,35 +1,25 @@
 ---
-description: MeetMaker visual design — feminine-first, invitation-card aesthetic
+description: MeetMaker Material Design 3 — UI, motion, copy
 globs: src/**/*.{tsx,css}
 alwaysApply: false
 ---
 
-# MeetMaker Design Language
+# MeetMaker Design (Material 3)
 
 ## Audience
-Women 18–35 inviting someone on a date or cozy meetup. Feel: Pinterest invite, not SaaS dashboard.
-
-## Tone
-- Warm, light, inviting Russian copy — never cold or technical
-- Prefer «приглашение», «открытка», «встреча» over «сессия», «данные»
-- Emoji/stickers: 💕 🌸 ✨ ☕ — generous but tasteful
+Women 18–35 inviting someone on a date or cozy meetup. Warm Russian copy.
 
 ## Visual
-- **Default theme**: `romantic` (blush + lavender)
-- **Typography**: Playfair Display headings, Nunito body
-- **Surfaces**: glass postcards with gradient border, not flat lists on black
-- **Background**: plum/rose aurora — never opaque `bg-black` over aurora
-- **Accent**: rose gold / blush — avoid harsh indigo-only and generic green success
-- **Motion**: CSS `animate-in` only — no Framer `initial={{ opacity: 0 }}`
+- **System**: Material Design 3 dark — Roboto, surface `#141218`, elevated cards `#2B2930`
+- **Themes**: romantic (pink), coffee (orange), minimal (violet) — use `[data-theme]` CSS tokens
+- **Components**: `PostcardFrame` (elevated card + accent bar), `md-filled-button`, `md-list-item`
+- **Never**: flat black-only UI, harsh indigo, Framer `initial={{ opacity: 0 }}`
 
-## Components
-- Use `PostcardFrame` for intro, confirm, final, StepReady
-- Use `ThemeDecorations` intensity `bold` on recipient pages
-- Theme tokens via `[data-theme]` CSS vars — never hardcode `#6366f1`
+## Motion (M3 emphasized easing `cubic-bezier(0.2, 0, 0, 1)`)
+- Step changes: `md-reveal` / `StepTransition`
+- Success: `ConfettiBurst`, `md-celebrate-ring`, `md-success-pop`
+- Cards: `md-card-enter` on `PostcardFrame`
+- Respect `prefers-reduced-motion`
 
-## Themes
-| id | vibe |
-|----|------|
-| romantic | default, dates, soft pink |
-| coffee | cozy café meetups |
-| minimal | clean, optional |
+## Copy
+- Prefer «приглашение», «открытка», «встреча» — not «сессия», «данные»

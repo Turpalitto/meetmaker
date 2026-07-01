@@ -11,6 +11,8 @@ export interface Place {
 
 export type ThemeType = 'minimal' | 'coffee' | 'romantic';
 
+export type CardAppearance = 'light' | 'dark';
+
 export interface MeetingCard {
   id: string;
   title: string;
@@ -18,6 +20,12 @@ export interface MeetingCard {
   places: Place[];
   theme: ThemeType;
   createdAt: string;
+  /** How to greet the recipient, e.g. "Катя" */
+  recipientName?: string;
+  /** Short personal message on the postcard */
+  personalNote?: string;
+  /** Light romantic postcard vs dark premium */
+  appearance?: CardAppearance;
 }
 
 export type MeetingStatus =
@@ -48,6 +56,9 @@ export interface StoreState {
   currentPlaceInput: string;
   places: Place[];
   selectedTheme: ThemeType;
+  recipientName: string;
+  personalNote: string;
+  cardAppearance: CardAppearance;
 
   // Recipient flow
   recipientStep: number;
@@ -76,6 +87,9 @@ export interface StoreState {
   addPlace: (name: string) => void;
   removePlace: (id: string) => void;
   setSelectedTheme: (theme: ThemeType) => void;
+  setRecipientName: (name: string) => void;
+  setPersonalNote: (note: string) => void;
+  setCardAppearance: (appearance: CardAppearance) => void;
   resetCreator: () => void;
 
   // Actions - Recipient

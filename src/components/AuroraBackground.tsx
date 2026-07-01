@@ -7,15 +7,9 @@ interface AuroraBackgroundProps {
   className?: string;
 }
 
-export function AuroraBackground({ theme = 'minimal', className }: AuroraBackgroundProps) {
-  const themeClass = theme === 'coffee' ? 'aurora-bg-coffee' : theme === 'romantic' ? 'aurora-bg-romantic' : '';
-
+/** M3 surface background with subtle primary tint */
+export function AuroraBackground({ theme = 'romantic', className }: AuroraBackgroundProps) {
   return (
-    <div className={cn('aurora-bg', themeClass, className)}>
-      <div className="aurora-blob" />
-      <div className="aurora-blob" />
-      <div className="aurora-blob" />
-      <div className="aurora-blob" />
-    </div>
+    <div className={cn('md-bg', `md-bg-${theme}`, className)} aria-hidden />
   );
 }

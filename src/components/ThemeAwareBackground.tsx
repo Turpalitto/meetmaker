@@ -21,7 +21,7 @@ export function ThemeAwareBackground({
     <>
       <AuroraBackground theme={theme} className="-z-10" />
       {showDecorations && (
-        <ThemeDecorations theme={theme} intensity="bold" />
+        <ThemeDecorations theme={theme} intensity="subtle" />
       )}
     </>
   );

@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { useMeetingStore } from '@/store/useMeetingStore';
+import { WizardActions } from '@/components/WizardActions';
 import { X, Calendar, ChevronLeft, ChevronRight } from 'lucide-react';
 import { formatDate, getTodayDate, getNextWeekDates } from '@/lib/utils';
 import { useMounted } from '@/hooks/useMounted';
@@ -54,35 +55,33 @@ export function StepDates() {
 
   return (
     <div className="w-full max-w-sm">
-      <div className="flex gap-2 mb-6 justify-center flex-wrap">
+      <div className="flex gap-2 mb-4 justify-center flex-wrap">
         {quickDates.map((d) => {
           const picked = selectedDates.includes(d);
           return (
-          <button
-            key={d}
-            type="button"
-            onClick={() => handleDateClick(d)}
-            className={`px-4 py-2 rounded-full text-sm font-medium transition-all suggestion-pop ${
-              picked
-                ? 'text-white shadow-lg'
-                : 'bg-white/10 text-white/60 border border-white/15 hover:bg-theme-soft'
-            }`}
-            style={picked ? { background: 'var(--mm-accent)', boxShadow: '0 8px 24px var(--mm-accent-glow)' } : undefined}
-          >
-            {formatDate(d).split(',')[0]}
-          </button>
-        );})}
+            <button
+              key={d}
+              type="button"
+              onClick={() => handleDateClick(d)}
+              className={`chip ${picked ? 'chip-accent' : ''}`}
+            >
+              {formatDate(d).split(',')[0]}
+            </button>
+          );
+        })}
       </div>
 
-      <div className="glass-card rounded-3xl p-5 mb-8 text-white">
+      <div className="ios-group mb-6">
+        <p className="ios-section-header">Календарь</p>
+        <div className="ios-grouped-card calendar-panel text-white">
         <div className="flex items-center justify-between mb-5">
-          <button type="button" onClick={prevMonth} className="p-2 rounded-full hover:bg-white/10 text-white/50">
+          <button type="button" onClick={prevMonth} className="p-2 rounded-full hover:bg-white/10 text-white/50 transition-colors">
             <ChevronLeft className="h-5 w-5" />
           </button>
-          <h3 className="font-semibold text-lg">
+          <h3 className="font-semibold text-[17px]">
             {MONTH_NAMES[currentMonth]} {currentYear}
           </h3>
-          <button type="button" onClick={nextMonth} className="p-2 rounded-full hover:bg-white/10 text-white/50">
+          <button type="button" onClick={nextMonth} className="p-2 rounded-full hover:bg-white/10 text-white/50 transition-colors">
             <ChevronRight className="h-5 w-5" />
           </button>
         </div>
@@ -111,30 +110,31 @@ export function StepDates() {
                 disabled={isPast && !isToday}
                 className={`relative aspect-square rounded-2xl text-sm font-medium flex items-center justify-center transition-all ${
                   isSelected
-                    ? 'text-white scale-105'
+                    ? 'text-white scale-105 shadow-lg'
                     : isPast && !isToday
                     ? 'text-white/15 cursor-not-allowed'
                     : 'text-white/70 hover:bg-white/10'
                 }`}
-                style={isSelected ? { background: 'var(--mm-accent)' } : undefined}
+                style={isSelected ? { background: 'var(--mm-accent)', boxShadow: '0 4px 16px var(--mm-accent-glow)' } : undefined}
               >
                 {day}
               </button>
             );
           })}
         </div>
+        </div>
       </div>
 
       {selectedDates.length > 0 && (
-        <div className="mb-8">
-          <p className="text-white/30 text-sm text-center mb-3">Выбранные даты</p>
-          <div className="flex flex-wrap justify-center gap-2">
+        <div className="ios-group mb-4">
+          <p className="ios-section-header">Выбрано</p>
+          <div className="ios-grouped-card divide-y divide-ios-separator">
             {selectedDates.map((dateStr) => (
-              <div key={dateStr} className="date-card flex items-center gap-2 px-4 py-2.5">
-                <Calendar className="h-4 w-4 text-theme" strokeWidth={1.5} />
-                <span className="text-white text-sm font-medium">{formatDate(dateStr)}</span>
-                <button type="button" onClick={() => removeDate(dateStr)} className="p-1 rounded-full hover:bg-white/10 text-white/40">
-                  <X className="h-3.5 w-3.5" />
+              <div key={dateStr} className="ios-cell-static">
+                <Calendar className="h-5 w-5 text-theme shrink-0" strokeWidth={2} />
+                <span className="ios-cell-title flex-1">{formatDate(dateStr)}</span>
+                <button type="button" onClick={() => removeDate(dateStr)} className="ios-btn-plain !min-h-0 !p-1 text-white/40">
+                  <X className="h-4 w-4" />
                 </button>
               </div>
             ))}
@@ -142,19 +142,11 @@ export function StepDates() {
         </div>
       )}
 
-      <div className="flex justify-center gap-3">
-        <button type="button" onClick={() => setCurrentStep(0)} className="rounded-full bg-white/5 border border-white/10 px-6 py-3 text-sm text-white/60">
-          Назад
-        </button>
-        <button
-          type="button"
-          onClick={() => setCurrentStep(2)}
-          disabled={dates.length === 0}
-          className="rounded-full bg-white/10 px-8 py-3 text-base font-semibold text-white border border-white/20 disabled:opacity-30"
-        >
-          Продолжить
-        </button>
-      </div>
+      <WizardActions
+        onBack={() => setCurrentStep(0)}
+        onContinue={() => setCurrentStep(2)}
+        continueDisabled={dates.length === 0}
+      />
     </div>
   );
 }

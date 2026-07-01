@@ -21,6 +21,9 @@ export interface CardRow {
   status: MeetingStatus;
   recipient_choice: RecipientChoice | null;
   created_at: string;
+  recipient_name?: string | null;
+  personal_note?: string | null;
+  appearance?: MeetingCard["appearance"] | null;
 }
 
 const memoryStore = new Map<string, CardRow>();
@@ -41,6 +44,9 @@ function rowToSession(row: CardRow): MeetingSession {
       places: row.places,
       theme: row.theme,
       createdAt: row.created_at,
+      recipientName: row.recipient_name ?? undefined,
+      personalNote: row.personal_note ?? undefined,
+      appearance: row.appearance ?? "light",
     },
     status: row.status,
     recipientChoice: row.recipient_choice ?? undefined,
@@ -72,11 +78,24 @@ export async function createCard(card: MeetingCard): Promise<MeetingSession> {
     status: "created",
     recipient_choice: null,
     created_at: card.createdAt,
+    recipient_name: card.recipientName ?? null,
+    personal_note: card.personalNote ?? null,
+    appearance: card.appearance ?? "light",
   };
 
   const supabase = getSupabase();
   if (supabase) {
-    const { error } = await supabase.from("meeting_cards").insert(row);
+    let { error } = await supabase.from("meeting_cards").insert(row);
+    if (error?.message?.includes("recipient_name") || error?.message?.includes("appearance")) {
+      const {
+        recipient_name: _rn,
+        personal_note: _pn,
+        appearance: _ap,
+        ...legacyRow
+      } = row;
+      const retry = await supabase.from("meeting_cards").insert(legacyRow);
+      error = retry.error;
+    }
     if (error) throw new Error(error.message);
   } else if (isGitHubConfigured()) {
     await githubCreateCard(row);

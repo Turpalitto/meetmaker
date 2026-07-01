@@ -10,32 +10,37 @@ interface ConfettiBurstProps {
 }
 
 export function ConfettiBurst({ theme, active = true }: ConfettiBurstProps) {
+  const config = getThemeConfig(theme);
+
   const particles = useMemo(() => {
-    const pool = getThemeConfig(theme).stickers;
-    return Array.from({ length: 24 }, (_, i) => ({
-      emoji: pool[i % pool.length],
-      left: `${4 + ((i * 17) % 92)}%`,
-      top: `${5 + ((i * 11) % 40)}%`,
-      delay: `${i * 0.08}s`,
-      size: i % 3 === 0 ? "text-3xl" : i % 3 === 1 ? "text-2xl" : "text-xl",
+    const shapes = [config.emoji, "●", "◆", "✦"];
+    return Array.from({ length: 18 }, (_, i) => ({
+      char: shapes[i % shapes.length],
+      left: `${6 + ((i * 19) % 88)}%`,
+      top: `${0 + ((i * 13) % 25)}%`,
+      delay: `${i * 0.06}s`,
+      size: i % 3 === 0 ? "text-2xl" : "text-sm",
+      color: i % 4 === 1 ? "var(--mm-accent)" : undefined,
     }));
-  }, [theme]);
+  }, [config.emoji]);
 
   if (!active) return null;
 
   return (
-    <div className="confetti-burst" aria-hidden>
+    <div className="confetti-burst pointer-events-none" aria-hidden>
       {particles.map((s, i) => (
         <span
           key={i}
-          className={`sticker-glow ${s.size}`}
+          className={`absolute select-none ${s.size}`}
           style={{
             left: s.left,
             top: s.top,
             animationDelay: s.delay,
+            color: s.color,
+            opacity: s.char === "●" ? 0.7 : 1,
           }}
         >
-          {s.emoji}
+          {s.char}
         </span>
       ))}
     </div>

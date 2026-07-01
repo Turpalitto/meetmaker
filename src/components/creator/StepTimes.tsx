@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { useMeetingStore } from '@/store/useMeetingStore';
+import { WizardActions } from '@/components/WizardActions';
 import { Clock, Plus, Check } from 'lucide-react';
 import { formatDate } from '@/lib/utils';
 
@@ -29,30 +30,24 @@ export function StepTimes() {
 
   return (
     <div className="w-full max-w-md">
-      <div className="flex gap-2 mb-8 justify-center flex-wrap">
+      <div className="flex gap-2 mb-4 justify-center flex-wrap">
         {dates.map((d) => (
           <button
             key={d.date}
             type="button"
             onClick={() => setActiveDate(d.date)}
-            className={`px-5 py-2.5 rounded-full text-sm font-medium transition-all duration-200 ${
-              activeDate === d.date
-                ? 'pill-button-primary !py-2.5 !px-5 scale-105'
-                : 'bg-white/10 text-white/60 border border-white/15 hover:bg-white/12'
-            }`}
+            className={`chip ${activeDate === d.date ? 'chip-accent' : ''}`}
           >
             {formatDate(d.date).split(',')[0]}
-            {d.times.length > 0 && <span className="ml-1.5 text-xs">({d.times.length})</span>}
+            {d.times.length > 0 && <span className="opacity-70">({d.times.length})</span>}
           </button>
         ))}
       </div>
 
       {activeDate && (
-        <div className="mb-8">
-          <p className="text-white/30 text-sm text-center mb-4">
-            Выберите время для {formatDate(activeDate).toLowerCase()}
-          </p>
-          <div className="flex flex-wrap justify-center gap-2 mb-8">
+        <div className="ios-group mb-4">
+          <p className="ios-section-header">Время · {formatDate(activeDate).split(',')[0]}</p>
+          <div className="ios-grouped-card p-3 flex flex-wrap gap-2 justify-center">
             {QUICK_TIMES.map((time) => {
               const isSelected = currentDateObj?.times.includes(time) || false;
               return (
@@ -60,28 +55,22 @@ export function StepTimes() {
                   key={time}
                   type="button"
                   onClick={() => handleTimeToggle(time)}
-                  className={`px-5 py-2.5 rounded-full text-sm font-medium ${
-                    isSelected
-                      ? 'pill-button-primary !py-2.5 !px-5 suggestion-pop'
-                      : 'bg-white/10 text-white/60 border border-white/15 hover:bg-theme-soft hover:scale-105 transition-all suggestion-pop'
-                  }`}
+                  className={`chip gap-1 ${isSelected ? 'chip-accent' : ''}`}
                 >
                   {time}
-                  {isSelected && <Check className="inline-block ml-1.5 h-3.5 w-3.5" strokeWidth={3} />}
+                  {isSelected && <Check className="h-3.5 w-3.5" strokeWidth={3} />}
                 </button>
               );
             })}
           </div>
-          <div className="flex items-center gap-2 justify-center mb-8">
-            <div className="relative">
-              <Clock className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-white/30" />
-              <input
-                type="time"
-                value={customTime}
-                onChange={(e) => setCustomTime(e.target.value)}
-                className="premium-input pl-10 py-2.5 text-sm w-36"
-              />
-            </div>
+          <div className="ios-grouped-card flex items-center mt-2 pr-2">
+            <Clock className="h-5 w-5 text-theme ml-3 shrink-0" strokeWidth={2} />
+            <input
+              type="time"
+              value={customTime}
+              onChange={(e) => setCustomTime(e.target.value)}
+              className="ios-input-field flex-1"
+            />
             <button
               type="button"
               onClick={() => {
@@ -91,36 +80,33 @@ export function StepTimes() {
                 }
               }}
               disabled={!customTime}
-              className="p-2.5 rounded-full bg-white/10 border border-white/20 text-white/70 disabled:opacity-30"
+              className="ios-checkmark !w-8 !h-8 disabled:opacity-30"
             >
-              <Plus className="h-4 w-4" />
+              <Plus className="h-4 w-4 text-white" strokeWidth={2.5} />
             </button>
           </div>
         </div>
       )}
 
-      <div className="mb-8 space-y-2">
-        {dates.map((d) => (
-          <div key={d.date} className="flex justify-between py-2 border-b border-white/5 text-sm">
-            <span className="text-white/60">{formatDate(d.date)}</span>
-            <span className="text-white/40">{d.times.length > 0 ? `${d.times.length} вариантов` : 'не выбрано'}</span>
-          </div>
-        ))}
+      <div className="ios-group mb-6">
+        <p className="ios-section-header">Сводка</p>
+        <div className="ios-grouped-card divide-y divide-ios-separator">
+          {dates.map((d) => (
+            <div key={d.date} className="ios-cell-static">
+              <span className="ios-cell-title flex-1">{formatDate(d.date)}</span>
+              <span className={d.times.length > 0 ? 'text-theme text-[15px]' : 'ios-cell-subtitle'}>
+                {d.times.length > 0 ? `${d.times.length} вариантов` : 'не выбрано'}
+              </span>
+            </div>
+          ))}
+        </div>
       </div>
 
-      <div className="flex justify-center gap-3">
-        <button type="button" onClick={() => setCurrentStep(1)} className="rounded-full bg-white/5 border border-white/10 px-6 py-3 text-sm text-white/60">
-          Назад
-        </button>
-        <button
-          type="button"
-          onClick={() => setCurrentStep(3)}
-          disabled={!allDatesHaveTimes}
-          className="rounded-full bg-white/10 px-8 py-3 text-base font-semibold text-white border border-white/20 disabled:opacity-30"
-        >
-          Продолжить
-        </button>
-      </div>
+      <WizardActions
+        onBack={() => setCurrentStep(1)}
+        onContinue={() => setCurrentStep(3)}
+        continueDisabled={!allDatesHaveTimes}
+      />
     </div>
   );
 }

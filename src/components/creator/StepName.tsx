@@ -2,26 +2,36 @@
 
 import { useState } from 'react';
 import { useMeetingStore } from '@/store/useMeetingStore';
-import { ArrowRight, Coffee, Film, Footprints, Utensils } from 'lucide-react';
+import { WizardActions } from '@/components/WizardActions';
+import { Coffee, Film, Footprints, Utensils } from 'lucide-react';
 
 const suggestions = [
-  { icon: Coffee, label: 'Кофе ☕' },
-  { icon: Utensils, label: 'Ужин 🕯️' },
-  { icon: Film, label: 'Кино 🎬' },
-  { icon: Footprints, label: 'Прогулка 🌸' },
+  { icon: Coffee, label: 'Кофе с тобой' },
+  { icon: Utensils, label: 'Ужин вдвоём' },
+  { icon: Film, label: 'Кино' },
+  { icon: Footprints, label: 'Прогулка' },
 ];
 
 export function StepName() {
   const meetingTitle = useMeetingStore((s) => s.meetingTitle);
+  const recipientName = useMeetingStore((s) => s.recipientName);
+  const personalNote = useMeetingStore((s) => s.personalNote);
   const setMeetingTitle = useMeetingStore((s) => s.setMeetingTitle);
+  const setRecipientName = useMeetingStore((s) => s.setRecipientName);
+  const setPersonalNote = useMeetingStore((s) => s.setPersonalNote);
   const setCurrentStep = useMeetingStore((s) => s.setCurrentStep);
+
   const [localTitle, setLocalTitle] = useState(meetingTitle);
+  const [localName, setLocalName] = useState(recipientName);
+  const [localNote, setLocalNote] = useState(personalNote);
 
   const canContinue = localTitle.trim().length > 0;
 
   const handleContinue = () => {
     if (!canContinue) return;
     setMeetingTitle(localTitle.trim());
+    setRecipientName(localName.trim());
+    setPersonalNote(localNote.trim());
     setCurrentStep(1);
   };
 
@@ -33,40 +43,64 @@ export function StepName() {
 
   return (
     <div className="w-full max-w-md">
-      {/* Big input field */}
-      <div className="mb-8">
-        <input
-          type="text"
-          value={localTitle}
-          onChange={(e) => setLocalTitle(e.target.value)}
-          onKeyDown={(e) => e.key === 'Enter' && handleContinue()}
-          placeholder="Например, Кофе с тобой"
-          className="w-full bg-transparent text-4xl sm:text-5xl font-bold text-white placeholder-white/20 border-none outline-none text-center tracking-tight"
-          autoFocus
-        />
-        <div className="h-0.5 bg-white/10 mt-4 rounded-full overflow-hidden">
-          <div
-            className="h-full theme-gradient-bar transition-all duration-300"
-            style={{ width: localTitle ? '100%' : '0%' }}
+      <div className="md-section mb-5">
+        <p className="md-overline">О чём встреча</p>
+        <div className="md-filled-card px-4 py-3">
+          <input
+            type="text"
+            value={localTitle}
+            onChange={(e) => setLocalTitle(e.target.value)}
+            onKeyDown={(e) => e.key === 'Enter' && handleContinue()}
+            placeholder="Например, Кофе с тобой"
+            className="postcard-input-hero w-full"
+            autoFocus
           />
         </div>
       </div>
 
-      {/* Suggestions */}
+      <div className="md-section mb-5 md-reveal md-reveal-d1">
+        <p className="md-overline">Как обратиться?</p>
+        <div className="md-filled-card px-4 py-3">
+          <input
+            type="text"
+            value={localName}
+            onChange={(e) => setLocalName(e.target.value)}
+            placeholder="Имя получателя — необязательно"
+            className="postcard-input w-full"
+          />
+        </div>
+        <p className="md-label-small mt-2 px-1">Появится в приветствии: «Привет, Катя!»</p>
+      </div>
+
+      <div className="md-section mb-6 md-reveal md-reveal-d2">
+        <p className="md-overline">Короткая записка</p>
+        <div className="md-filled-card px-4 py-3">
+          <textarea
+            value={localNote}
+            onChange={(e) => setLocalNote(e.target.value)}
+            placeholder="Давно хотела с тобой погулять…"
+            rows={3}
+            maxLength={200}
+            className="postcard-textarea w-full resize-none"
+          />
+        </div>
+        <p className="md-label-small mt-2 px-1 text-right">{localNote.length}/200</p>
+      </div>
+
       {!localTitle && (
-        <div className="mb-8">
-          <p className="text-white/30 text-sm text-center mb-4 font-light">Быстрый выбор</p>
-          <div className="flex justify-center gap-3 flex-wrap">
-            {suggestions.map((item, index) => {
+        <div className="md-section mb-4 md-reveal md-reveal-d3">
+          <p className="md-overline">Или выбери готовое</p>
+          <div className="flex flex-wrap gap-2">
+            {suggestions.map((item) => {
               const Icon = item.icon;
               return (
                 <button
                   key={item.label}
+                  type="button"
                   onClick={() => handleSuggestion(item.label)}
-                  className="flex items-center gap-2 px-5 py-3 rounded-full bg-white/10 border border-white/15 text-white/80 hover:bg-theme-soft hover:text-white hover:border-theme hover:scale-[1.05] transition-all duration-200 text-sm font-medium suggestion-pop"
-                  style={{ animationDelay: `${index * 80}ms` }}
+                  className="md-assist-chip gap-1.5"
                 >
-                  <Icon className="h-4 w-4" strokeWidth={1.5} />
+                  <Icon className="h-4 w-4" strokeWidth={2} />
                   {item.label}
                 </button>
               );
@@ -75,18 +109,12 @@ export function StepName() {
         </div>
       )}
 
-      {/* Continue button */}
-      <div className="flex justify-center">
-        <button
-          onClick={handleContinue}
-          disabled={!canContinue}
-          className="group relative inline-flex items-center gap-2 rounded-full bg-white/10 backdrop-blur-xl px-8 py-3.5 text-base font-semibold text-white border border-white/20 transition-all duration-300 hover:bg-white/15 hover:scale-[1.02] active:scale-[0.98] disabled:opacity-30 disabled:cursor-not-allowed disabled:hover:scale-100"
-        >
-          Продолжить
-          <ArrowRight className="h-4 w-4" strokeWidth={2} />
-          <div className="absolute inset-0 rounded-full bg-gradient-to-r from-indigo-500/10 to-purple-500/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-        </button>
-      </div>
+      <WizardActions
+        showBack={false}
+        onContinue={handleContinue}
+        continueDisabled={!canContinue}
+        continueLabel="Дальше"
+      />
     </div>
   );
 }
