@@ -18,7 +18,7 @@ export const useMeetingStore = create<StoreState>((set, get) => ({
   dates: [],
   currentPlaceInput: "",
   places: [],
-  selectedTheme: "minimal",
+  selectedTheme: "romantic",
 
   recipientStep: -1,
   selectedDate: null,
@@ -98,7 +98,7 @@ export const useMeetingStore = create<StoreState>((set, get) => ({
       dates: [],
       currentPlaceInput: "",
       places: [],
-      selectedTheme: "minimal",
+      selectedTheme: "romantic",
     }),
 
   setRecipientStep: (step) => set({ recipientStep: step }),

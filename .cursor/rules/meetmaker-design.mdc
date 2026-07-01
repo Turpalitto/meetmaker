@@ -1,0 +1,35 @@
+---
+description: MeetMaker visual design — feminine-first, invitation-card aesthetic
+globs: src/**/*.{tsx,css}
+alwaysApply: false
+---
+
+# MeetMaker Design Language
+
+## Audience
+Women 18–35 inviting someone on a date or cozy meetup. Feel: Pinterest invite, not SaaS dashboard.
+
+## Tone
+- Warm, light, inviting Russian copy — never cold or technical
+- Prefer «приглашение», «открытка», «встреча» over «сессия», «данные»
+- Emoji/stickers: 💕 🌸 ✨ ☕ — generous but tasteful
+
+## Visual
+- **Default theme**: `romantic` (blush + lavender)
+- **Typography**: Playfair Display headings, Nunito body
+- **Surfaces**: glass postcards with gradient border, not flat lists on black
+- **Background**: plum/rose aurora — never opaque `bg-black` over aurora
+- **Accent**: rose gold / blush — avoid harsh indigo-only and generic green success
+- **Motion**: CSS `animate-in` only — no Framer `initial={{ opacity: 0 }}`
+
+## Components
+- Use `PostcardFrame` for intro, confirm, final, StepReady
+- Use `ThemeDecorations` intensity `bold` on recipient pages
+- Theme tokens via `[data-theme]` CSS vars — never hardcode `#6366f1`
+
+## Themes
+| id | vibe |
+|----|------|
+| romantic | default, dates, soft pink |
+| coffee | cozy café meetups |
+| minimal | clean, optional |

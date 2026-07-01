@@ -15,11 +15,11 @@ import type { ThemeType } from '@/types';
 const TOTAL_STEPS = 5;
 
 const stepTitles = [
-  { title: 'Как назовем встречу?', subtitle: 'Одно слово — и настроение готово' },
-  { title: 'Добавь даты', subtitle: 'Получатель выберет удобный день' },
-  { title: 'Добавь время', subtitle: 'Несколько вариантов — меньше переписки' },
-  { title: 'Добавь места', subtitle: 'Кафе, парк или что угодно' },
-  { title: 'Выбери оформление', subtitle: 'Три стиля — три настроения' },
+  { title: 'О чём встреча?', subtitle: 'Кофе, прогулка, кино — как душе угодно' },
+  { title: 'Когда удобно?', subtitle: 'Предложи несколько дат — пусть выберет' },
+  { title: 'Во сколько?', subtitle: 'Добавь варианты времени на каждый день' },
+  { title: 'Где встретитесь?', subtitle: 'Любимые места или новые открытия' },
+  { title: 'Настроение открытки', subtitle: 'Какой вайб хочешь передать?' },
 ];
 
 export function CreatorWizard() {
@@ -27,7 +27,7 @@ export function CreatorWizard() {
   const selectedTheme = useMeetingStore((s) => s.selectedTheme);
   const isComplete = currentStep >= TOTAL_STEPS;
 
-  const theme: ThemeType = currentStep >= 4 || isComplete ? selectedTheme : 'minimal';
+  const theme: ThemeType = selectedTheme;
 
   return (
     <div className="relative isolate min-h-screen" data-theme={theme}>

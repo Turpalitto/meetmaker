@@ -2,63 +2,74 @@
 
 import Link from 'next/link';
 import { AuroraBackground } from '@/components/AuroraBackground';
-import { THEME_CONFIG } from '@/lib/themes';
-import { Sparkles } from 'lucide-react';
-import type { ThemeType } from '@/types';
+import { ThemeDecorations } from '@/components/ThemeDecorations';
+import { THEME_CONFIG, THEME_ORDER } from '@/lib/themes';
+import { Heart, Sparkles } from 'lucide-react';
 
 export default function HomePage() {
   return (
-    <main className="relative min-h-screen w-full overflow-hidden" data-theme="minimal">
-      <AuroraBackground />
+    <main className="scene-page scene-vignette relative min-h-screen w-full overflow-hidden" data-theme="romantic">
+      <AuroraBackground theme="romantic" />
+      <ThemeDecorations theme="romantic" intensity="bold" />
 
-      <div className="relative z-10 flex min-h-screen flex-col items-center justify-center px-6">
-        <div className="mb-8 animate-in fade-in zoom-in-95 duration-700">
+      <div className="relative z-10 flex min-h-screen flex-col items-center justify-center px-6 py-12">
+        <div className="mb-6 animate-in fade-in zoom-in-95 duration-700">
           <div className="relative flex items-center justify-center">
-            <div className="absolute inset-0 bg-gradient-to-r from-indigo-500 to-purple-500 rounded-full blur-3xl opacity-20" />
-            <div className="relative flex h-20 w-20 items-center justify-center rounded-[28px] bg-white/10 backdrop-blur-xl border border-white/20 shadow-2xl">
-              <Sparkles className="h-10 w-10 text-white" strokeWidth={1.5} />
+            <div
+              className="absolute inset-0 rounded-full blur-3xl opacity-40"
+              style={{ background: 'linear-gradient(135deg, var(--mm-gradient-from), var(--mm-gradient-to))' }}
+            />
+            <div className="relative flex h-20 w-20 items-center justify-center rounded-[2rem] bg-white/10 backdrop-blur-xl border border-white/25 shadow-2xl">
+              <Heart className="h-10 w-10 text-pink-300" strokeWidth={1.5} fill="currentColor" fillOpacity={0.2} />
             </div>
           </div>
         </div>
 
-        <h1 className="text-6xl sm:text-7xl md:text-8xl font-bold text-white text-center tracking-tight mb-4 animate-in fade-in slide-in-from-bottom-4 duration-700 delay-150 fill-mode-both">
+        <p className="text-pink-200/60 text-sm tracking-[0.3em] uppercase mb-4 animate-in fade-in duration-700 delay-100 fill-mode-both">
+          открытка-приглашение
+        </p>
+
+        <h1 className="font-display text-5xl sm:text-6xl md:text-7xl text-white text-center mb-4 animate-in fade-in slide-in-from-bottom-4 duration-700 delay-150 fill-mode-both">
           MeetMaker
         </h1>
 
-        <p className="text-lg sm:text-xl text-white/50 text-center max-w-md mb-10 font-light animate-in fade-in slide-in-from-bottom-4 duration-700 delay-300 fill-mode-both">
-          Самый красивый способ
+        <p className="text-lg sm:text-xl text-white/55 text-center max-w-sm mb-3 font-light leading-relaxed animate-in fade-in slide-in-from-bottom-4 duration-700 delay-250 fill-mode-both">
+          Красиво пригласить на встречу —
           <br />
-          договориться о встрече
+          <span className="text-pink-200/80">без неловких переписок</span>
+        </p>
+
+        <p className="text-white/35 text-sm text-center max-w-xs mb-10 animate-in fade-in duration-700 delay-350 fill-mode-both">
+          Создай открытку за минуту. Он выберет дату, время и место сам 💕
         </p>
 
         <div className="flex gap-3 mb-10 animate-in fade-in duration-700 delay-400 fill-mode-both">
-          {(Object.keys(THEME_CONFIG) as ThemeType[]).map((id) => {
+          {THEME_ORDER.map((id) => {
             const t = THEME_CONFIG[id];
             return (
               <div
                 key={id}
-                className="flex flex-col items-center gap-1 px-3 py-2 rounded-2xl bg-white/5 border border-white/10"
-                title={t.label}
+                className="flex flex-col items-center gap-1.5 px-4 py-3 rounded-2xl bg-white/10 border border-white/15 backdrop-blur-sm min-w-[5.5rem]"
               >
-                <span className="text-xl">{t.emoji}</span>
-                <span className="text-[10px] text-white/40 uppercase tracking-wide">{t.label}</span>
+                <span className="text-2xl">{t.emoji}</span>
+                <span className="text-[11px] text-white/50">{t.labelRu}</span>
               </div>
             );
           })}
         </div>
 
-        <div className="animate-in fade-in slide-in-from-bottom-4 duration-700 delay-500 fill-mode-both">
+        <div className="animate-in fade-in slide-in-from-bottom-4 duration-700 delay-500 fill-mode-both w-full max-w-xs">
           <Link
             href="/create"
-            className="group relative inline-flex items-center gap-2 rounded-full bg-white/10 backdrop-blur-xl px-8 py-4 text-lg font-semibold text-white border border-white/20 shadow-2xl transition-all duration-300 hover:bg-white/15 hover:scale-[1.02] active:scale-[0.98]"
+            className="pill-button pill-button-primary w-full flex items-center justify-center gap-2 text-base py-4"
           >
-            <Sparkles className="h-5 w-5 text-indigo-400 group-hover:text-indigo-300 transition-colors" strokeWidth={1.5} />
-            Создать открытку
+            <Sparkles className="h-5 w-5" />
+            Создать приглашение
           </Link>
         </div>
 
-        <p className="absolute bottom-8 text-white/20 text-sm font-light animate-in fade-in duration-1000 delay-700 fill-mode-both">
-          вместо переписки «Когда тебе удобно?»
+        <p className="absolute bottom-8 text-white/25 text-xs text-center px-6 animate-in fade-in duration-1000 delay-700 fill-mode-both">
+          Идеально для свиданий, кофе и уютных встреч
         </p>
       </div>
     </main>

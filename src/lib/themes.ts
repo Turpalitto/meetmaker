@@ -4,54 +4,61 @@ import type { ThemeType } from "@/types";
 export interface ThemeConfig {
   id: ThemeType;
   label: string;
+  labelRu: string;
   description: string;
   gradient: string;
   emoji: string;
   stickers: string[];
-  icon: LucideIcon;
-  /** Large corner / floating decorations */
   decor: string[];
-  /** Header ribbon pattern */
   ribbon: string;
   tagline: string;
+  badge?: string;
+  icon: LucideIcon;
 }
 
+/** Romantic first — default feminine-forward palette */
+export const THEME_ORDER: ThemeType[] = ["romantic", "coffee", "minimal"];
+
 export const THEME_CONFIG: Record<ThemeType, ThemeConfig> = {
-  minimal: {
-    id: "minimal",
-    label: "Minimal",
-    description: "Чистый, современный стиль",
-    gradient: "from-indigo-500 to-purple-500",
-    emoji: "✨",
-    stickers: ["✨", "⭐", "💫", "🌟", "✦", "⚡", "🔮"],
-    decor: ["✨", "⭐", "💫", "🌟"],
-    ribbon: "✦ ✨ ✦ ✨ ✦",
-    tagline: "Современно и легко",
-    icon: Sparkles,
+  romantic: {
+    id: "romantic",
+    label: "Romantic",
+    labelRu: "Романтика",
+    description: "Нежно, как открытка к свиданию",
+    gradient: "from-pink-400 via-rose-400 to-fuchsia-400",
+    emoji: "💕",
+    stickers: ["💕", "💗", "🌸", "🎀", "💖", "🌹", "✨", "💝"],
+    decor: ["💕", "🌸", "💖", "🎀"],
+    ribbon: "♡ meetmaker ♡",
+    tagline: "С любовью к деталям",
+    badge: "Популярный",
+    icon: Heart,
   },
   coffee: {
     id: "coffee",
     label: "Coffee",
-    description: "Тёплая, уютная атмосфера",
-    gradient: "from-amber-600 to-orange-500",
+    labelRu: "Уют",
+    description: "Тёплый вайб кофейни и болтовни",
+    gradient: "from-amber-500 via-orange-400 to-rose-300",
     emoji: "☕",
-    stickers: ["☕", "🫘", "🍪", "🥐", "🧁", "🍩", "☕"],
-    decor: ["☕", "🍪", "🥐", "🫘"],
-    ribbon: "☕ 🍪 ☕ 🍪 ☕",
-    tagline: "Тепло и уютно",
+    stickers: ["☕", "🫖", "🍪", "🥐", "🧁", "🍯", "✨", "☕"],
+    decor: ["☕", "🍪", "🥐", "🫖"],
+    ribbon: "☕ уютно ♡",
+    tagline: "Тепло и по-домашнему",
     icon: Coffee,
   },
-  romantic: {
-    id: "romantic",
-    label: "Romantic",
-    description: "Нежный, романтичный стиль",
-    gradient: "from-pink-500 to-rose-500",
-    emoji: "💕",
-    stickers: ["💕", "💗", "🌸", "🎀", "💖", "🌹", "💝"],
-    decor: ["💕", "🌸", "💖", "🎀"],
-    ribbon: "💕 🌸 💕 🌸 💕",
-    tagline: "Нежно и по-особенному",
-    icon: Heart,
+  minimal: {
+    id: "minimal",
+    label: "Minimal",
+    labelRu: "Лаконично",
+    description: "Чисто и современно",
+    gradient: "from-violet-400 via-indigo-400 to-purple-500",
+    emoji: "✨",
+    stickers: ["✨", "⭐", "💫", "🌟", "✦", "🤍", "✨", "⭐"],
+    decor: ["✨", "⭐", "💫", "🌟"],
+    ribbon: "✦ meetmaker ✦",
+    tagline: "Стильно и просто",
+    icon: Sparkles,
   },
 };
 
@@ -60,7 +67,7 @@ export function getThemeConfig(theme: ThemeType): ThemeConfig {
 }
 
 export function themeGradientClass(theme: ThemeType): string {
-  if (theme === "coffee") return "from-amber-500 via-orange-500 to-amber-700";
-  if (theme === "romantic") return "from-pink-400 via-rose-500 to-fuchsia-600";
-  return "from-indigo-400 via-violet-500 to-purple-600";
+  if (theme === "coffee") return "from-amber-400 via-orange-400 to-rose-300";
+  if (theme === "romantic") return "from-pink-400 via-rose-400 to-fuchsia-400";
+  return "from-violet-400 via-indigo-400 to-purple-500";
 }

@@ -1,17 +1,22 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
+import { Nunito, Playfair_Display } from "next/font/google";
 import "./globals.css";
 import { Toaster } from "@/components/ui/sonner";
 
-const inter = Inter({
+const nunito = Nunito({
   subsets: ["latin", "cyrillic"],
-  variable: "--font-inter",
+  variable: "--font-nunito",
+});
+
+const playfair = Playfair_Display({
+  subsets: ["latin", "cyrillic"],
+  variable: "--font-playfair",
 });
 
 export const metadata: Metadata = {
-  title: "MeetMaker — Договориться о встрече красиво",
+  title: "MeetMaker — Красивое приглашение на встречу",
   description:
-    "Самый красивый способ договориться о встрече. Отправьте открытку вместо переписки.",
+    "Отправь открытку-приглашение вместо переписки. Романтично, уютно, без неловких вопросов.",
 };
 
 export default function RootLayout({
@@ -20,10 +25,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="ru" className={`dark ${inter.variable}`}>
-      <body
-        className={`${inter.className} min-h-screen bg-black antialiased`}
-      >
+    <html lang="ru" className={`dark ${nunito.variable} ${playfair.variable}`}>
+      <body className="min-h-screen antialiased font-sans bg-mm-base text-white">
         {children}
         <Toaster position="top-center" />
       </body>

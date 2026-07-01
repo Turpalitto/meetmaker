@@ -34,10 +34,10 @@ export function ThemeHeroIcon({
 
   const gradientClass =
     theme === "coffee"
-      ? "from-amber-600 to-orange-500"
+      ? "from-amber-400 via-orange-400 to-rose-300"
       : theme === "romantic"
-        ? "from-pink-500 to-rose-500"
-        : "from-indigo-500 to-purple-500";
+        ? "from-pink-400 via-rose-400 to-fuchsia-400"
+        : "from-violet-400 via-indigo-400 to-purple-500";
 
   return (
     <div

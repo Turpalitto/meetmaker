@@ -8,7 +8,7 @@ interface StepTitleProps {
 export function StepTitle({ title, subtitle }: StepTitleProps) {
   return (
     <div className="text-center mb-10 w-full max-w-md animate-in fade-in slide-in-from-bottom-2 duration-500 fill-mode-both">
-      <h2 className="text-3xl sm:text-4xl font-bold text-white tracking-tight">
+      <h2 className="font-display text-3xl sm:text-4xl font-bold text-white tracking-tight">
         {title}
       </h2>
       {subtitle && (

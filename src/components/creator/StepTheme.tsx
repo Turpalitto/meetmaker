@@ -1,9 +1,8 @@
 'use client';
 
 import { useMeetingStore } from '@/store/useMeetingStore';
-import { THEME_CONFIG } from '@/lib/themes';
+import { THEME_CONFIG, THEME_ORDER } from '@/lib/themes';
 import { Check, Sparkles } from 'lucide-react';
-import type { ThemeType } from '@/types';
 
 export function StepTheme() {
   const selectedTheme = useMeetingStore((s) => s.selectedTheme);
@@ -15,7 +14,7 @@ export function StepTheme() {
   return (
     <div className="w-full max-w-md">
       <div className="space-y-4 mb-10">
-        {(Object.keys(THEME_CONFIG) as ThemeType[]).map((id, index) => {
+        {THEME_ORDER.map((id, index) => {
           const theme = THEME_CONFIG[id];
           const Icon = theme.icon;
           const isSelected = selectedTheme === id;
@@ -31,6 +30,11 @@ export function StepTheme() {
               }`}
               style={{ animationDelay: `${index * 80}ms` }}
             >
+              {theme.badge && (
+                <span className="absolute -top-2 right-4 text-[10px] uppercase tracking-wider px-2.5 py-0.5 rounded-full bg-gradient-to-r from-pink-400 to-fuchsia-400 text-white font-semibold shadow-lg">
+                  {theme.badge}
+                </span>
+              )}
               <div className="flex items-center gap-4">
                 <div
                   className={`w-14 h-14 rounded-2xl bg-gradient-to-br ${theme.gradient} flex items-center justify-center shadow-lg`}
@@ -39,21 +43,14 @@ export function StepTheme() {
                 </div>
                 <div className="flex-1">
                   <div className="flex items-center gap-2">
-                    <h3 className="text-white font-semibold text-lg">{theme.label}</h3>
-                    <span className="text-lg">{theme.emoji}</span>
+                    <h3 className="font-display text-white text-xl">{theme.labelRu}</h3>
+                    <span className="text-xl">{theme.emoji}</span>
                   </div>
-                  <p className="text-white/40 text-sm">{theme.description}</p>
-                  <div className="flex gap-1.5 mt-2">
-                    {theme.stickers.slice(0, 4).map((s) => (
-                      <span key={s} className="text-sm opacity-70">
-                        {s}
-                      </span>
-                    ))}
-                  </div>
+                  <p className="text-white/45 text-sm mt-0.5">{theme.description}</p>
                 </div>
                 {isSelected && (
                   <div
-                    className="w-8 h-8 rounded-full flex items-center justify-center"
+                    className="w-8 h-8 rounded-full flex items-center justify-center shrink-0"
                     style={{ background: 'var(--mm-accent)' }}
                   >
                     <Check className="h-4 w-4 text-white" strokeWidth={3} />
@@ -79,7 +76,7 @@ export function StepTheme() {
           disabled={isSaving}
           className="pill-button pill-button-primary inline-flex items-center gap-2 px-8 disabled:opacity-50"
         >
-          {isSaving ? 'Сохраняем…' : 'Создать открытку'}
+          {isSaving ? 'Сохраняем…' : 'Отправить открытку 💕'}
           <Sparkles className="h-4 w-4" />
         </button>
       </div>

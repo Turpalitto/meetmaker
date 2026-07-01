@@ -5,10 +5,10 @@ import { useMeetingStore } from '@/store/useMeetingStore';
 import { ArrowRight, Coffee, Film, Footprints, Utensils } from 'lucide-react';
 
 const suggestions = [
-  { icon: Coffee, label: 'Кофе' },
-  { icon: Utensils, label: 'Ужин' },
-  { icon: Film, label: 'Кино' },
-  { icon: Footprints, label: 'Прогулка' },
+  { icon: Coffee, label: 'Кофе ☕' },
+  { icon: Utensils, label: 'Ужин 🕯️' },
+  { icon: Film, label: 'Кино 🎬' },
+  { icon: Footprints, label: 'Прогулка 🌸' },
 ];
 
 export function StepName() {
@@ -40,7 +40,7 @@ export function StepName() {
           value={localTitle}
           onChange={(e) => setLocalTitle(e.target.value)}
           onKeyDown={(e) => e.key === 'Enter' && handleContinue()}
-          placeholder="Например, Кофе"
+          placeholder="Например, Кофе с тобой"
           className="w-full bg-transparent text-4xl sm:text-5xl font-bold text-white placeholder-white/20 border-none outline-none text-center tracking-tight"
           autoFocus
         />
