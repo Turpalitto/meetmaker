@@ -6,15 +6,16 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint .",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "db:push": "drizzle-kit push",
+    "db:studio": "drizzle-kit studio",
+    "db:apply": "node scripts/apply-schema.mjs"
   },
   "dependencies": {
     "clsx": "^2.1.1",
     "date-fns": "^4.4.0",
     "dotenv": "17.3.1",
     "drizzle-orm": "0.45.2",
-    "framer-motion": "^12.42.2",
-    "lucide-react": "^1.22.0",
     "nanoid": "^5.1.16",
     "next": "16.2.6",
     "pg": "8.20.0",
