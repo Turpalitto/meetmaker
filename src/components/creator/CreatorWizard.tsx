@@ -10,7 +10,7 @@ import { StepPlaces } from './StepPlaces';
 import { StepTheme } from './StepTheme';
 import { StepReady } from './StepReady';
 import { StepTransition } from '@/components/StepTransition';
-import { StepChoiceAmbience } from '@/components/StepChoiceAmbience';
+import Link from 'next/link';
 import type { ThemeType } from '@/types';
 
 const TOTAL_STEPS = 5;
@@ -26,78 +26,64 @@ const stepTitles = [
 export function CreatorWizard() {
   const currentStep = useMeetingStore((s) => s.currentStep);
   const selectedTheme = useMeetingStore((s) => s.selectedTheme);
-  const cardAppearance = useMeetingStore((s) => s.cardAppearance);
   const isComplete = currentStep >= TOTAL_STEPS;
 
   const theme: ThemeType = selectedTheme;
 
   return (
-    <div
-      className="relative isolate min-h-screen"
-      data-theme={theme}
-      data-appearance={cardAppearance}
-    >
-      {!isComplete && (
-        <div className="fixed top-0 left-0 right-0 z-[100] px-5 pt-[max(0.75rem,env(safe-area-inset-top))] pb-2 pointer-events-none">
-          <div className="max-w-md mx-auto pointer-events-auto">
-            <StepIndicator currentStep={currentStep} totalSteps={TOTAL_STEPS} />
+    <div className="relative isolate min-h-screen" data-theme={theme}>
+      <div className="mx-auto max-w-xl px-5 py-8">
+        {!isComplete && (
+          <div className="mb-8">
+            <div className="flex items-center justify-between">
+              <Link href="/" className="mm-text-button text-sm" style={{ color: 'var(--mm-ink-soft)' }}>
+                ← На главную
+              </Link>
+              <span className="mm-eyebrow">
+                Шаг {currentStep + 1} из {TOTAL_STEPS}
+              </span>
+            </div>
+            <div className="mt-4">
+              <StepIndicator currentStep={currentStep} totalSteps={TOTAL_STEPS} />
+            </div>
+            <div className="mt-6">
+              <StepTitle {...stepTitles[currentStep]} />
+            </div>
           </div>
-        </div>
-      )}
+        )}
 
-      <div className="relative z-[50] min-h-screen">
-        {currentStep === 0 && (
-          <StepTransition stepKey={0} className="min-h-screen flex flex-col items-center justify-center px-4 pt-24 pb-12">
-            <StepChoiceAmbience step={0}>
-              <StepTitle {...stepTitles[0]} />
+        <div className="mm-card p-6 mm-fade">
+          {currentStep === 0 && (
+            <StepTransition stepKey={0}>
               <StepName />
-            </StepChoiceAmbience>
-          </StepTransition>
-        )}
-
-        {currentStep === 1 && (
-          <StepTransition stepKey={1} className="min-h-screen flex flex-col items-center justify-center px-4 pt-24 pb-12">
-            <StepChoiceAmbience step={1}>
-              <StepTitle {...stepTitles[1]} />
+            </StepTransition>
+          )}
+          {currentStep === 1 && (
+            <StepTransition stepKey={1}>
               <StepDates />
-            </StepChoiceAmbience>
-          </StepTransition>
-        )}
-
-        {currentStep === 2 && (
-          <StepTransition stepKey={2} className="min-h-screen flex flex-col items-center px-4 pt-32 pb-12">
-            <StepChoiceAmbience step={2}>
-              <StepTitle {...stepTitles[2]} />
+            </StepTransition>
+          )}
+          {currentStep === 2 && (
+            <StepTransition stepKey={2}>
               <StepTimes />
-            </StepChoiceAmbience>
-          </StepTransition>
-        )}
-
-        {currentStep === 3 && (
-          <StepTransition stepKey={3} className="min-h-screen flex flex-col items-center px-4 pt-32 pb-12">
-            <StepChoiceAmbience step={3}>
-              <StepTitle {...stepTitles[3]} />
+            </StepTransition>
+          )}
+          {currentStep === 3 && (
+            <StepTransition stepKey={3}>
               <StepPlaces />
-            </StepChoiceAmbience>
-          </StepTransition>
-        )}
-
-        {currentStep === 4 && (
-          <StepTransition stepKey={4} className="min-h-screen flex flex-col items-center justify-center px-4 pt-24 pb-12">
-            <StepChoiceAmbience step={4}>
-              <StepTitle {...stepTitles[4]} />
+            </StepTransition>
+          )}
+          {currentStep === 4 && (
+            <StepTransition stepKey={4}>
               <StepTheme />
-            </StepChoiceAmbience>
-          </StepTransition>
-        )}
-
-        {isComplete && (
-          <StepTransition stepKey="ready" className="min-h-screen flex flex-col items-center justify-center px-6 py-12">
-            <StepChoiceAmbience step={4} celebrate>
+            </StepTransition>
+          )}
+          {isComplete && (
+            <StepTransition stepKey="ready">
               <StepReady />
-            </StepChoiceAmbience>
-          </StepTransition>
-        )}
+            </StepTransition>
+          )}
+        </div>
       </div>
     </div>
   );

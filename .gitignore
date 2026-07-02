@@ -41,6 +41,9 @@ yarn-error.log*
 auth
 auth-wal
 
+# local dev card storage
+.data/
+
 # typescript
 *.tsbuildinfo
 next-env.d.ts

@@ -12,7 +12,7 @@ export function RecipientStepDates() {
   if (!card) return null;
 
   return (
-    <div className="w-full pt-10">
+    <div className="w-full">
       <div className="ios-screen-header mb-6">
         <h2 className="ios-large-title">Когда удобно?</h2>
         <p className="ios-footnote mt-2">Выбери один из вариантов</p>

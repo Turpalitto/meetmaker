@@ -3,32 +3,18 @@
 import { useEffect, useState } from 'react';
 import { useParams } from 'next/navigation';
 import Link from 'next/link';
-import { AuroraBackground } from '@/components/AuroraBackground';
-import { PostcardFrame } from '@/components/PostcardFrame';
 import { fetchCard } from '@/lib/api';
-import { resolveCardAppearance } from '@/lib/appearance';
-import { choiceToLabel, formatDateShort } from '@/lib/utils';
+import { choiceToLabel, formatDateShort, generateShareUrl } from '@/lib/utils';
+import { getThemeConfig } from '@/lib/themes';
 import type { MeetingSession, MeetingStatus } from '@/types';
-import {
-  ArrowLeft,
-  Check,
-  Clock,
-  Link2,
-  MessageSquare,
-  Sparkles,
-  UserCheck,
-} from 'lucide-react';
+import { IconCheck, IconClock, IconCopy, IconPin, IconTelegram, IconWhatsapp } from '@/components/Icons';
 
-const STATUS_STEPS: {
-  key: MeetingStatus;
-  label: string;
-  icon: typeof Sparkles;
-}[] = [
-  { key: 'created', label: 'Открытка готова', icon: Sparkles },
-  { key: 'link_opened', label: 'Приглашение открыто', icon: Link2 },
-  { key: 'recipient_choosing', label: 'Ждём ответ', icon: Clock },
-  { key: 'response_received', label: 'Выбор получен', icon: MessageSquare },
-  { key: 'confirmed', label: 'Встреча согласована', icon: UserCheck },
+const STATUS_STEPS: { key: MeetingStatus; label: string; desc: string }[] = [
+  { key: 'created', label: 'Открытка создана', desc: 'Ссылка готова к отправке' },
+  { key: 'link_opened', label: 'Приглашение открыто', desc: 'Получатель увидел открытку' },
+  { key: 'recipient_choosing', label: 'Ждём ответ', desc: 'Ожидаем выбор удобного времени' },
+  { key: 'response_received', label: 'Выбор получен', desc: 'Получатель ответил' },
+  { key: 'confirmed', label: 'Встреча согласована', desc: 'Всё готово к встрече' },
 ];
 
 function statusIndex(status: MeetingStatus): number {
@@ -47,6 +33,8 @@ export default function StatusPage() {
   const id = params?.id as string;
   const [session, setSession] = useState<MeetingSession | null>(null);
   const [loading, setLoading] = useState(true);
+  const [copied, setCopied] = useState(false);
+  const [shareUrl, setShareUrl] = useState('');
 
   useEffect(() => {
     if (!id) return;
@@ -65,26 +53,45 @@ export default function StatusPage() {
     return () => clearInterval(interval);
   }, [id]);
 
+  useEffect(() => {
+    if (id) setShareUrl(generateShareUrl(id));
+  }, [id]);
+
   const theme = session?.card.theme ?? 'romantic';
-  const appearance = resolveCardAppearance(session?.card);
+  const config = getThemeConfig(theme);
   const currentIdx = session ? statusIndex(session.status) : -1;
+  const responded = session ? currentIdx >= statusIndex('confirmed') : false;
+
+  async function copyLink() {
+    try {
+      await navigator.clipboard.writeText(shareUrl);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    } catch {
+      setCopied(false);
+    }
+  }
+
+  const shareText = session
+    ? `${session.card.title} — приглашение: ${shareUrl}`
+    : shareUrl;
 
   return (
-    <main
-      className="scene-page relative min-h-screen w-full overflow-hidden"
-      data-theme={theme}
-      data-appearance={appearance}
-    >
-      <AuroraBackground theme={theme} />
-
+    <main className="mm-page scene-page relative min-h-screen w-full" data-theme={theme}>
       <div className="relative z-10 min-h-screen px-5 py-10 max-w-lg mx-auto">
-        <Link href="/" className="md-text-button mb-6 md-reveal">
-          <ArrowLeft className="h-4 w-4" />
-          На главную
-        </Link>
+        <div className="mb-6 flex items-center justify-between">
+          <Link href="/" className="mm-text-button text-sm" style={{ color: 'var(--mm-ink-soft)' }}>
+            ← MeetMaker
+          </Link>
+          {session && (
+            <span className={`mm-chip ${responded ? 'mm-badge-success' : 'mm-badge-pending'}`}>
+              {responded ? 'Есть ответ' : 'Ждём ответ'}
+            </span>
+          )}
+        </div>
 
         {loading && (
-          <div className="md-reveal">
+          <div className="mm-rise">
             <div className="md-linear-progress mb-6">
               <div className="md-linear-progress-bar" style={{ width: '40%' }} />
             </div>
@@ -93,78 +100,110 @@ export default function StatusPage() {
         )}
 
         {!loading && !session && (
-          <PostcardFrame theme="minimal" variant="filled" size="md">
-            <p className="md-body-muted text-center md-reveal">Открытка не найдена</p>
-          </PostcardFrame>
+          <div className="mm-card p-6 text-center mm-rise">
+            <p className="md-body-muted">Открытка не найдена</p>
+          </div>
         )}
 
         {session && (
           <>
-            <div className="mb-8 md-reveal">
-              <p className="md-overline mb-1">Статус встречи</p>
-              <h1 className="md-headline-emphasis">{session.card.title}</h1>
-            </div>
+            <div className="mm-card p-7 mm-rise mb-5">
+              <p className="mm-eyebrow">
+                {config.emoji} Открытка для {session.card.recipientName || 'получателя'}
+              </p>
+              <h1 className="mm-display mt-3 text-3xl">
+                {responded ? 'Встреча назначена' : session.card.title}
+              </h1>
 
-            <PostcardFrame theme={theme} variant="elevated" ribbon appearance={appearance} className="mb-6">
-              <div className="space-y-0">
+              <div className="mt-7 space-y-0">
                 {STATUS_STEPS.map((step, index) => {
                   const done = index <= currentIdx;
-                  const active = index === currentIdx;
-                  const Icon = step.icon;
+                  const pending = index === currentIdx + 1 || (index === currentIdx && !responded);
+                  const last = index === STATUS_STEPS.length - 1;
                   return (
-                    <div
-                      key={step.key}
-                      className="flex gap-4 md-reveal"
-                      style={{ animationDelay: `${120 + index * 80}ms` }}
-                    >
+                    <div key={step.key} className="flex gap-4">
                       <div className="flex flex-col items-center">
-                        <div
-                          className={`md-status-node ${done ? 'md-status-node--done' : ''} ${active ? 'md-status-node--active' : ''}`}
-                        >
-                          {done ? (
-                            <Check className="h-5 w-5" strokeWidth={2.5} />
-                          ) : (
-                            <Icon className="h-4 w-4" strokeWidth={1.75} />
-                          )}
-                        </div>
-                        {index < STATUS_STEPS.length - 1 && (
-                          <div
-                            className={`md-status-connector ${index < currentIdx ? 'md-status-connector--done' : ''}`}
+                        <span
+                          className="mm-node"
+                          data-state={done ? 'done' : pending ? 'pending' : undefined}
+                        />
+                        {!last && (
+                          <span
+                            className="my-1 w-px flex-1"
+                            style={{ background: done ? 'var(--mm-accent)' : 'var(--mm-line-strong)' }}
                           />
                         )}
                       </div>
-                      <div className={`pb-5 pt-1.5 flex-1 ${active ? '' : 'opacity-70'}`}>
-                        <p className={`md-list-title ${active ? '!text-[#e6e0e9]' : ''}`}>
-                          {step.label}
+                      <div className={last ? 'pb-0' : 'pb-6'}>
+                        <p className="mm-display text-base">{step.label}</p>
+                        <p className="mt-0.5 text-sm" style={{ color: 'var(--mm-ink-soft)' }}>
+                          {step.desc}
                         </p>
-                        {active && index < STATUS_STEPS.length - 1 && (
-                          <p className="md-list-subtitle mt-0.5">Сейчас здесь</p>
-                        )}
                       </div>
                     </div>
                   );
                 })}
               </div>
-            </PostcardFrame>
 
-            {session.recipientChoice && (
-              <PostcardFrame theme={theme} variant="filled" size="md" className="mb-6">
-                <p className="md-overline mb-2 md-reveal">Выбор получателя</p>
-                <p className="md-list-title md-reveal md-reveal-d1">
-                  {choiceToLabel(session.recipientChoice)}
-                </p>
-                <p className="md-list-subtitle mt-1 md-reveal md-reveal-d2">
-                  {formatDateShort(session.recipientChoice.date)}
-                </p>
-              </PostcardFrame>
-            )}
+              {session.recipientChoice && (
+                <div
+                  className="mt-6 rounded-[var(--mm-r-md)] p-5"
+                  style={{ background: 'var(--mm-container)' }}
+                >
+                  <p className="mm-eyebrow" style={{ color: 'var(--mm-on-container)' }}>
+                    Выбор получателя
+                  </p>
+                  <p className="mm-display mt-2 text-lg" style={{ color: 'var(--mm-on-container)' }}>
+                    {choiceToLabel(session.recipientChoice)}
+                  </p>
+                  <p className="mt-1 text-sm" style={{ color: 'var(--mm-on-container)' }}>
+                    {formatDateShort(session.recipientChoice.date)}
+                  </p>
+                </div>
+              )}
+            </div>
 
-            <Link
-              href={`/card/${session.card.id}`}
-              className="md-filled-button w-full py-3 text-center md-reveal md-reveal-d4"
-            >
-              Открыть открытку
-            </Link>
+            <div className="mm-card p-6 mm-rise mm-delay-1">
+              <p className="mm-label">Ссылка на открытку</p>
+              <div className="flex flex-col gap-2 sm:flex-row mt-2">
+                <input className="mm-input" readOnly value={shareUrl} onFocus={(e) => e.target.select()} />
+                <button type="button" className="mm-icon-btn shrink-0 justify-center sm:w-auto" onClick={copyLink}>
+                  {copied ? <IconCheck className="h-4 w-4" /> : <IconCopy className="h-4 w-4" />}
+                  {copied ? 'Скопировано' : 'Копировать'}
+                </button>
+              </div>
+
+              {!responded && (
+                <div className="mt-4 flex flex-wrap gap-2">
+                  <a
+                    className="mm-share-btn"
+                    href={`https://t.me/share/url?url=${encodeURIComponent(shareUrl)}&text=${encodeURIComponent(session.card.title)}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    <IconTelegram /> Telegram
+                  </a>
+                  <a
+                    className="mm-share-btn"
+                    href={`https://wa.me/?text=${encodeURIComponent(shareText)}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    <IconWhatsapp /> WhatsApp
+                  </a>
+                </div>
+              )}
+
+              <div className="mt-4">
+                <Link
+                  href={`/card/${session.card.id}`}
+                  className="mm-text-button text-sm"
+                  style={{ color: 'var(--mm-accent-strong)' }}
+                >
+                  Посмотреть открытку глазами получателя →
+                </Link>
+              </div>
+            </div>
           </>
         )}
       </div>

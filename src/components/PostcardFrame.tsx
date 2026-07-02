@@ -12,6 +12,7 @@ interface PostcardFrameProps {
   size?: "md" | "lg";
   variant?: "elevated" | "filled";
   appearance?: CardAppearance;
+  showStamp?: boolean;
 }
 
 export function PostcardFrame({
@@ -20,29 +21,24 @@ export function PostcardFrame({
   className,
   ribbon = false,
   size = "lg",
-  variant = "elevated",
-  appearance = "light",
+  showStamp = true,
 }: PostcardFrameProps) {
   const config = getThemeConfig(theme);
 
   return (
     <div
-      className={cn(
-        "md-section w-full mx-auto",
-        size === "lg" ? "max-w-md" : "max-w-sm",
-        className,
-      )}
-      data-appearance={appearance}
+      className={cn("w-full mx-auto", size === "lg" ? "max-w-md" : "max-w-sm", className)}
+      data-theme={theme}
     >
-      {ribbon && <p className="md-overline">{config.ribbon}</p>}
-      <div
-        className={cn(
-          variant === "filled" ? "md-filled-card" : "md-elevated-card",
-          "postcard-card md-card-enter p-5 sm:p-6 pt-6",
+      {ribbon && <p className="mm-eyebrow mb-2">{config.ribbon}</p>}
+      <div className="mm-postcard mm-rise">
+        <div className="mm-accent-bar" />
+        {showStamp && (
+          <span className="mm-stamp" aria-hidden>
+            {config.emoji}
+          </span>
         )}
-      >
-        <div className="md-card-accent-bar" aria-hidden />
-        {children}
+        <div className={cn("p-6 sm:p-8", showStamp && "pr-20 sm:pr-24")}>{children}</div>
       </div>
     </div>
   );

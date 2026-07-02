@@ -87,3 +87,17 @@ export function greetingForRecipient(name?: string): string {
   if (!trimmed) return "Привет!";
   return `Привет, ${trimmed}!`;
 }
+
+export type MoodListItem = {
+  key: ThemeType;
+  label: string;
+  tagline: string;
+  emoji: string;
+};
+
+export const MOOD_LIST: MoodListItem[] = THEME_ORDER.map((id) => ({
+  key: id,
+  label: THEME_CONFIG[id].labelRu,
+  tagline: THEME_CONFIG[id].description,
+  emoji: THEME_CONFIG[id].emoji,
+}));

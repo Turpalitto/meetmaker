@@ -35,6 +35,7 @@ export const useMeetingStore = create<StoreState>((set, get) => ({
   recipientChoice: null,
   currentSession: null,
   isSaving: false,
+  saveError: null,
 
   setCurrentStep: (step) => set({ currentStep: step }),
   setMeetingTitle: (title) => set({ meetingTitle: title }),
@@ -69,13 +70,11 @@ export const useMeetingStore = create<StoreState>((set, get) => ({
   removeTimeFromDate: (dateStr, time) => {
     const { dates } = get();
     set({
-      dates: dates
-        .filter((d) => d.date !== dateStr || d.times.length > 1)
-        .map((d) =>
-          d.date === dateStr
-            ? { ...d, times: d.times.filter((t) => t !== time) }
-            : d,
-        ),
+      dates: dates.map((d) =>
+        d.date === dateStr
+          ? { ...d, times: d.times.filter((t) => t !== time) }
+          : d,
+      ),
     });
   },
 
@@ -109,6 +108,7 @@ export const useMeetingStore = create<StoreState>((set, get) => ({
       recipientName: "",
       personalNote: "",
       cardAppearance: "light",
+      saveError: null,
     }),
 
   setRecipientStep: (step) => set({ recipientStep: step }),
@@ -146,9 +146,9 @@ export const useMeetingStore = create<StoreState>((set, get) => ({
         currentSession: {
           ...currentSession,
           recipientChoice: choice,
-          status: "response_received",
+          status: "confirmed",
         },
-        meetingStatus: "response_received",
+        meetingStatus: "confirmed",
       });
     }
   },
@@ -175,7 +175,7 @@ export const useMeetingStore = create<StoreState>((set, get) => ({
       appearance: cardAppearance,
     };
 
-    set({ isSaving: true });
+    set({ isSaving: true, saveError: null });
     try {
       const session = await saveCard(card);
       set({
@@ -183,14 +183,15 @@ export const useMeetingStore = create<StoreState>((set, get) => ({
         meetingStatus: session.status,
         currentStep: 5,
         isSaving: false,
+        saveError: null,
       });
-    } catch {
-      const session: MeetingSession = { card, status: "created" };
+    } catch (error) {
       set({
-        currentSession: session,
-        meetingStatus: "created",
-        currentStep: 5,
         isSaving: false,
+        saveError:
+          error instanceof Error
+            ? error.message
+            : "Не удалось сохранить открытку",
       });
     }
   },

@@ -2,26 +2,25 @@
 
 import { useState } from 'react';
 import { useMeetingStore } from '@/store/useMeetingStore';
-import { ConfettiBurst } from '@/components/ConfettiBurst';
-import { PostcardFrame } from '@/components/PostcardFrame';
-import { ThemeHeroIcon } from '@/components/ThemeHeroIcon';
-import { Copy, Check, Share2, QrCode, ArrowLeft, ExternalLink } from 'lucide-react';
+import Confetti from '@/components/Confetti';
 import { generateShareUrl } from '@/lib/utils';
 import { getThemeConfig } from '@/lib/themes';
+import { IconCheck, IconCopy } from '@/components/Icons';
 import { QRCodeSVG } from 'qrcode.react';
+import Link from 'next/link';
 
 export function StepReady() {
   const currentSession = useMeetingStore((s) => s.currentSession);
   const resetCreator = useMeetingStore((s) => s.resetCreator);
   const [copied, setCopied] = useState(false);
   const [showQR, setShowQR] = useState(false);
+  const [fireConfetti, setFireConfetti] = useState(true);
 
   if (!currentSession) return null;
 
   const { card } = currentSession;
   const theme = card.theme;
   const config = getThemeConfig(theme);
-  const appearance = card.appearance ?? 'light';
   const shareUrl = generateShareUrl(card.id);
 
   const handleCopy = async () => {
@@ -30,14 +29,7 @@ export function StepReady() {
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
     } catch {
-      const textArea = document.createElement('textarea');
-      textArea.value = shareUrl;
-      document.body.appendChild(textArea);
-      textArea.select();
-      document.execCommand('copy');
-      document.body.removeChild(textArea);
-      setCopied(true);
-      setTimeout(() => setCopied(false), 2000);
+      setCopied(false);
     }
   };
 
@@ -58,82 +50,64 @@ export function StepReady() {
   };
 
   return (
-    <div className="relative w-full max-w-md">
-      <ConfettiBurst theme={theme} />
+    <div className="relative w-full" data-theme={theme}>
+      <Confetti fire={fireConfetti} onEnd={() => setFireConfetti(false)} />
 
-      <PostcardFrame theme={theme} variant="elevated" appearance={appearance}>
-        <div className="text-center relative">
-          <div className="md-reveal">
-            <ThemeHeroIcon theme={theme} size="lg" celebrate className="mb-5 md-celebrate-ring" />
-          </div>
+      <div className="mm-postcard mm-seal text-center">
+        <div className="mm-accent-bar" />
+        <span className="mm-stamp" aria-hidden>
+          {config.emoji}
+        </span>
+        <div className="p-7 pr-20 sm:pr-24">
+          <p className="mm-eyebrow">Готово</p>
+          <h2 className="mm-postcard-title mt-3">Открытка создана</h2>
+          <p className="mt-2 text-lg mm-display">{card.title}</p>
 
-          <h2 className="md-postcard-title mb-1 md-reveal md-reveal-d1">
-            Готово {config.emoji}
-          </h2>
-          <p className="md-body-muted mb-2 md-reveal md-reveal-d2">{card.title}</p>
           {card.personalNote && (
-            <p className="postcard-note text-left mb-4 md-reveal md-reveal-d2">{card.personalNote}</p>
+            <p className="mm-serif-quote mt-4 text-base text-left" style={{ color: 'var(--mm-ink-soft)' }}>
+              «{card.personalNote}»
+            </p>
           )}
 
-          <div className="flex flex-wrap gap-2 justify-center mb-6 md-reveal md-reveal-d3">
-            {card.dates.map((d, i) => (
-              <span key={d.date} className="md-assist-chip" style={{ animationDelay: `${i * 50}ms` }}>
-                📅 {new Date(d.date + 'T12:00:00').toLocaleDateString('ru-RU', { day: 'numeric', month: 'short' })}
-              </span>
-            ))}
-            {card.places.map((p, i) => (
-              <span key={p.id} className="md-assist-chip">
-                📍 {p.name}
-              </span>
-            ))}
-          </div>
-
-          <div className="md-filled-card flex items-center gap-2 px-3 py-2.5 mb-5 text-left md-reveal md-reveal-d4">
-            <div className="flex-1 truncate md-label-small !text-[13px] !text-[#cac4d0]">{shareUrl}</div>
-            <button type="button" onClick={handleCopy} className="md-outlined-button !min-h-9 !min-w-9 !p-2">
-              {copied ? <Check className="h-4 w-4 text-green-400" /> : <Copy className="h-4 w-4" />}
+          <div className="mt-6 flex flex-col gap-2 sm:flex-row">
+            <input className="mm-input text-sm" readOnly value={shareUrl} onFocus={(e) => e.target.select()} />
+            <button type="button" className="mm-icon-btn shrink-0 justify-center" onClick={handleCopy}>
+              {copied ? <IconCheck className="h-4 w-4" /> : <IconCopy className="h-4 w-4" />}
+              {copied ? 'Скопировано' : 'Копировать'}
             </button>
           </div>
 
-          <button
-            type="button"
-            onClick={handleCopy}
-            className="md-filled-button w-full py-2.5 mb-3 md-reveal md-reveal-d5"
-          >
-            {copied ? 'Скопировано ✓' : 'Копировать ссылку'}
+          <button type="button" onClick={handleCopy} className="mm-filled-button mt-4 w-full">
+            {copied ? 'Ссылка скопирована ✓' : 'Копировать ссылку'}
           </button>
 
-          <div className="flex gap-2 mb-4 md-reveal md-reveal-d5">
-            <button type="button" onClick={handleShare} className="md-tonal-button flex-1 py-2">
-              <Share2 className="h-4 w-4" />
+          <div className="mt-3 flex gap-2">
+            <button type="button" onClick={handleShare} className="mm-ghost-button flex-1">
               Поделиться
             </button>
-            <button type="button" onClick={() => setShowQR(!showQR)} className="md-tonal-button flex-1 py-2">
-              <QrCode className="h-4 w-4" />
+            <button type="button" onClick={() => setShowQR(!showQR)} className="mm-ghost-button flex-1">
               QR-код
             </button>
           </div>
 
           {showQR && (
-            <div className="flex justify-center mb-5 animate-in zoom-in-95 duration-300">
-              <div className="md-filled-card p-4 rounded-2xl inline-flex md-elevation-3">
+            <div className="mt-5 flex justify-center">
+              <div className="mm-card p-4 inline-flex">
                 <QRCodeSVG value={shareUrl} size={148} />
               </div>
             </div>
           )}
 
-          <div className="flex justify-center gap-2 pt-4 border-t border-md-outline md-reveal md-reveal-d6">
-            <button type="button" onClick={resetCreator} className="md-text-button">
-              <ArrowLeft className="h-4 w-4" />
-              Новое
+          <div className="mt-6 flex flex-wrap justify-center gap-4 pt-4 border-t" style={{ borderColor: 'var(--mm-line)' }}>
+            <button type="button" onClick={resetCreator} className="mm-text-button text-sm" style={{ color: 'var(--mm-ink-soft)' }}>
+              ← Новая открытка
             </button>
-            <a href={`/status/${card.id}`} className="md-text-button">
-              Статус
-              <ExternalLink className="h-4 w-4" />
-            </a>
+            <Link href={`/status/${card.id}`} className="mm-text-button text-sm" style={{ color: 'var(--mm-accent-strong)' }}>
+              Статус встречи →
+            </Link>
           </div>
         </div>
-      </PostcardFrame>
+      </div>
     </div>
   );
 }

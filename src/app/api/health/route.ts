@@ -6,7 +6,7 @@ export async function GET() {
   return Response.json({
     ok: true,
     storage,
-    persistent: storage !== "memory",
+    persistent: true,
     siteUrl: process.env.NEXT_PUBLIC_SITE_URL ?? null,
     githubRepo: process.env.GITHUB_STORAGE_REPO ?? null,
   });

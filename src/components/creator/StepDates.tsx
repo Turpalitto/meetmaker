@@ -32,6 +32,7 @@ export function StepDates() {
   const firstDayOfWeek = new Date(currentYear, currentMonth, 1).getDay();
   const today = getTodayDate();
   const quickDates = getNextWeekDates(5);
+  const leadingEmpty = firstDayOfWeek === 0 ? 6 : firstDayOfWeek - 1;
 
   const handleDateClick = (dateStr: string) => {
     if (dateStr < today) return;
@@ -55,7 +56,8 @@ export function StepDates() {
 
   return (
     <div className="w-full max-w-sm">
-      <div className="flex gap-2 mb-4 justify-center flex-wrap">
+      <p className="mm-eyebrow mb-3">Быстрый выбор</p>
+      <div className="mb-5 flex flex-wrap justify-center gap-2">
         {quickDates.map((d) => {
           const picked = selectedDates.includes(d);
           return (
@@ -63,7 +65,8 @@ export function StepDates() {
               key={d}
               type="button"
               onClick={() => handleDateClick(d)}
-              className={`chip ${picked ? 'chip-accent' : ''}`}
+              className="mm-assist-chip"
+              aria-pressed={picked}
             >
               {formatDate(d).split(',')[0]}
             </button>
@@ -71,29 +74,44 @@ export function StepDates() {
         })}
       </div>
 
-      <div className="ios-group mb-6">
-        <p className="ios-section-header">Календарь</p>
-        <div className="ios-grouped-card calendar-panel text-white">
-        <div className="flex items-center justify-between mb-5">
-          <button type="button" onClick={prevMonth} className="p-2 rounded-full hover:bg-white/10 text-white/50 transition-colors">
+      <p className="mm-eyebrow mb-3">Календарь</p>
+      <div className="mm-card mb-6 p-4 sm:p-5">
+        <div className="mb-4 flex items-center justify-between">
+          <button
+            type="button"
+            onClick={prevMonth}
+            className="mm-icon-btn !px-2.5 !py-2"
+            aria-label="Предыдущий месяц"
+          >
             <ChevronLeft className="h-5 w-5" />
           </button>
-          <h3 className="font-semibold text-[17px]">
+          <h3 className="mm-display text-lg">
             {MONTH_NAMES[currentMonth]} {currentYear}
           </h3>
-          <button type="button" onClick={nextMonth} className="p-2 rounded-full hover:bg-white/10 text-white/50 transition-colors">
+          <button
+            type="button"
+            onClick={nextMonth}
+            className="mm-icon-btn !px-2.5 !py-2"
+            aria-label="Следующий месяц"
+          >
             <ChevronRight className="h-5 w-5" />
           </button>
         </div>
 
-        <div className="grid grid-cols-7 gap-1 mb-2">
+        <div className="mb-2 grid grid-cols-7 gap-1">
           {DAY_NAMES.map((day) => (
-            <div key={day} className="text-center text-white/30 text-xs font-medium py-1">{day}</div>
+            <div
+              key={day}
+              className="py-1 text-center text-xs font-semibold uppercase tracking-wide"
+              style={{ color: 'var(--mm-ink-faint)' }}
+            >
+              {day}
+            </div>
           ))}
         </div>
 
         <div className="grid grid-cols-7 gap-1">
-          {Array.from({ length: firstDayOfWeek === 0 ? 6 : firstDayOfWeek - 1 }, (_, i) => (
+          {Array.from({ length: leadingEmpty }, (_, i) => (
             <div key={`empty-${i}`} />
           ))}
           {Array.from({ length: daysInMonth }, (_, i) => {
@@ -102,38 +120,59 @@ export function StepDates() {
             const isPast = dateStr < today;
             const isSelected = selectedDates.includes(dateStr);
             const isToday = dateStr === today;
+
             return (
               <button
                 key={dateStr}
                 type="button"
                 onClick={() => handleDateClick(dateStr)}
                 disabled={isPast && !isToday}
-                className={`relative aspect-square rounded-2xl text-sm font-medium flex items-center justify-center transition-all ${
+                className="relative flex aspect-square items-center justify-center rounded-xl text-sm font-medium transition-all"
+                style={
                   isSelected
-                    ? 'text-white scale-105 shadow-lg'
+                    ? {
+                        background: 'var(--mm-accent)',
+                        color: 'var(--mm-on-accent)',
+                        boxShadow: '0 4px 14px var(--mm-glow)',
+                      }
                     : isPast && !isToday
-                    ? 'text-white/15 cursor-not-allowed'
-                    : 'text-white/70 hover:bg-white/10'
-                }`}
-                style={isSelected ? { background: 'var(--mm-accent)', boxShadow: '0 4px 16px var(--mm-accent-glow)' } : undefined}
+                      ? { color: 'var(--mm-ink-faint)', opacity: 0.45, cursor: 'not-allowed' }
+                      : isToday
+                        ? {
+                            color: 'var(--mm-accent-strong)',
+                            background: 'var(--mm-container)',
+                            border: '1px solid var(--mm-line-strong)',
+                          }
+                        : {
+                            color: 'var(--mm-ink)',
+                            background: 'transparent',
+                          }
+                }
               >
                 {day}
               </button>
             );
           })}
         </div>
-        </div>
       </div>
 
       {selectedDates.length > 0 && (
-        <div className="ios-group mb-4">
-          <p className="ios-section-header">Выбрано</p>
-          <div className="ios-grouped-card divide-y divide-ios-separator">
+        <div className="mb-4">
+          <p className="mm-eyebrow mb-3">Выбрано</p>
+          <div className="mm-card divide-y overflow-hidden" style={{ borderColor: 'var(--mm-line)' }}>
             {selectedDates.map((dateStr) => (
-              <div key={dateStr} className="ios-cell-static">
-                <Calendar className="h-5 w-5 text-theme shrink-0" strokeWidth={2} />
-                <span className="ios-cell-title flex-1">{formatDate(dateStr)}</span>
-                <button type="button" onClick={() => removeDate(dateStr)} className="ios-btn-plain !min-h-0 !p-1 text-white/40">
+              <div key={dateStr} className="flex items-center gap-3 px-4 py-3">
+                <Calendar className="h-5 w-5 shrink-0" style={{ color: 'var(--mm-accent)' }} strokeWidth={2} />
+                <span className="flex-1 text-sm" style={{ color: 'var(--mm-ink)' }}>
+                  {formatDate(dateStr)}
+                </span>
+                <button
+                  type="button"
+                  onClick={() => removeDate(dateStr)}
+                  className="mm-text-button !min-h-0 !p-1"
+                  style={{ color: 'var(--mm-ink-faint)' }}
+                  aria-label="Удалить дату"
+                >
                   <X className="h-4 w-4" />
                 </button>
               </div>

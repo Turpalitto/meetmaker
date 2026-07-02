@@ -1,27 +1,11 @@
 'use client';
 
-import dynamic from 'next/dynamic';
 import { useEffect, useState } from 'react';
 import { useParams } from 'next/navigation';
-import { AuroraBackground } from '@/components/AuroraBackground';
+import Link from 'next/link';
+import { RecipientFlow } from '@/components/recipient/RecipientFlow';
 import { useMeetingStore } from '@/store/useMeetingStore';
 import { fetchCard, markCardOpened } from '@/lib/api';
-import { resolveCardAppearance } from '@/lib/appearance';
-
-const RecipientFlow = dynamic(
-  () => import('@/components/recipient/RecipientFlow').then((m) => m.RecipientFlow),
-  {
-    ssr: false,
-    loading: () => (
-      <div className="w-full max-w-md md-reveal">
-        <div className="md-linear-progress mb-4">
-          <div className="md-linear-progress-bar" style={{ width: '55%' }} />
-        </div>
-        <p className="md-body-muted text-center">Загрузка открытки…</p>
-      </div>
-    ),
-  },
-);
 
 export default function CardPage() {
   const params = useParams();
@@ -30,12 +14,15 @@ export default function CardPage() {
   const currentSession = useMeetingStore((s) => s.currentSession);
   const [loading, setLoading] = useState(true);
   const [notFound, setNotFound] = useState(false);
+  const [loadError, setLoadError] = useState<string | null>(null);
 
   useEffect(() => {
     if (!id) return;
     let cancelled = false;
 
     async function load() {
+      setLoadError(null);
+      setNotFound(false);
       try {
         const session = await fetchCard(id);
         if (cancelled) return;
@@ -44,9 +31,15 @@ export default function CardPage() {
           return;
         }
         loadSession(session);
-        if (session.status === 'created') await markCardOpened(id);
-      } catch {
-        if (!cancelled) setNotFound(true);
+        if (session.status === 'created') {
+          void markCardOpened(id);
+        }
+      } catch (e) {
+        if (!cancelled) {
+          setLoadError(
+            e instanceof Error ? e.message : 'Не удалось загрузить открытку',
+          );
+        }
       } finally {
         if (!cancelled) setLoading(false);
       }
@@ -57,18 +50,12 @@ export default function CardPage() {
   }, [id, loadSession]);
 
   const theme = currentSession?.card.theme || 'romantic';
-  const appearance = resolveCardAppearance(currentSession?.card);
 
   return (
-    <main
-      className="scene-page relative min-h-screen w-full"
-      data-theme={theme}
-      data-appearance={appearance}
-    >
-      <AuroraBackground theme={theme} className="-z-10" />
+    <main className="mm-page scene-page relative min-h-screen w-full" data-theme={theme}>
       <div className="relative z-10 min-h-screen flex flex-col items-center justify-center px-4 py-8">
         {loading && (
-          <div className="w-full max-w-md md-reveal">
+          <div className="w-full max-w-md mm-rise">
             <div className="md-linear-progress mb-4">
               <div className="md-linear-progress-bar" style={{ width: '45%' }} />
             </div>
@@ -76,11 +63,29 @@ export default function CardPage() {
           </div>
         )}
         {!loading && notFound && (
-          <div className="md-filled-card p-6 max-w-sm w-full text-center md-card-enter">
+          <div className="mm-card p-6 max-w-sm w-full text-center mm-rise">
             <p className="md-body-muted">Открытка не найдена</p>
+            <p className="mt-2 text-sm" style={{ color: 'var(--mm-ink-faint)' }}>
+              Ссылка устарела или открытка ещё не была сохранена. Создайте новую.
+            </p>
+            <Link href="/create" className="mm-filled-button mt-5 inline-flex">
+              Создать открытку
+            </Link>
           </div>
         )}
-        {!loading && currentSession && !notFound && <RecipientFlow />}
+        {!loading && loadError && (
+          <div className="mm-card p-6 max-w-sm w-full text-center mm-rise">
+            <p style={{ color: 'var(--mm-error)' }}>{loadError}</p>
+            <button
+              type="button"
+              onClick={() => window.location.reload()}
+              className="mm-ghost-button mt-4"
+            >
+              Повторить
+            </button>
+          </div>
+        )}
+        {!loading && currentSession && !notFound && !loadError && <RecipientFlow />}
       </div>
     </main>
   );

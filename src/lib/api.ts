@@ -1,4 +1,9 @@
-import type { MeetingCard, MeetingSession, RecipientChoice } from "@/types";
+import type {
+  MeetingCard,
+  MeetingSession,
+  MeetingStatus,
+  RecipientChoice,
+} from "@/types";
 
 export async function saveCard(card: MeetingCard): Promise<MeetingSession> {
   const res = await fetch("/api/cards", {
@@ -40,9 +45,29 @@ export async function submitRecipientChoice(
 }
 
 export async function markCardOpened(id: string): Promise<void> {
-  await fetch(`/api/cards/${id}`, {
+  const res = await fetch(`/api/cards/${id}`, {
     method: "PATCH",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ status: "link_opened" }),
   });
+  if (!res.ok) {
+    const body = await res.json().catch(() => ({}));
+    throw new Error(body.error || "Не удалось обновить статус");
+  }
+}
+
+export async function updateCardStatus(
+  id: string,
+  status: MeetingStatus,
+): Promise<MeetingSession> {
+  const res = await fetch(`/api/cards/${id}`, {
+    method: "PATCH",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ status }),
+  });
+  if (!res.ok) {
+    const body = await res.json().catch(() => ({}));
+    throw new Error(body.error || "Не удалось обновить статус");
+  }
+  return res.json();
 }

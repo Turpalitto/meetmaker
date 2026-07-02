@@ -35,7 +35,7 @@ export async function PATCH(
 
     if (body.status) patch.status = body.status;
     if (body.recipientChoice) {
-      patch.status = "response_received";
+      patch.status = "confirmed";
       patch.recipient_choice = body.recipientChoice;
     }
 

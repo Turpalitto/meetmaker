@@ -49,7 +49,7 @@ export function StepPlaces() {
               onClick={() => handleAddPlace(currentPlaceInput.trim())}
               className="ios-checkmark !w-8 !h-8"
             >
-              <Plus className="h-4 w-4 text-white" strokeWidth={2.5} />
+              <Plus className="h-4 w-4" style={{ color: 'var(--mm-on-accent)' }} strokeWidth={2.5} />
             </button>
           )}
         </div>
@@ -80,7 +80,7 @@ export function StepPlaces() {
               <div key={place.id} className="ios-cell-static">
                 <MapPin className="h-5 w-5 text-theme shrink-0" strokeWidth={2} />
                 <span className="ios-cell-title flex-1">{place.name}</span>
-                <button type="button" onClick={() => removePlace(place.id)} className="ios-btn-plain !min-h-0 !p-1 text-white/40">
+                <button type="button" onClick={() => removePlace(place.id)} className="mm-text-button !min-h-0 !p-1" style={{ color: 'var(--mm-ink-faint)' }}>
                   <X className="h-4 w-4" />
                 </button>
               </div>

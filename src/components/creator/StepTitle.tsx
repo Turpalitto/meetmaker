@@ -7,9 +7,13 @@ interface StepTitleProps {
 
 export function StepTitle({ title, subtitle }: StepTitleProps) {
   return (
-    <div className="md-screen-header">
-      <h2 className="md-headline-emphasis">{title}</h2>
-      {subtitle && <p className="md-body-muted mt-2">{subtitle}</p>}
+    <div className="text-center mb-2">
+      <h2 className="mm-display text-3xl">{title}</h2>
+      {subtitle && (
+        <p className="mt-2 text-sm leading-relaxed" style={{ color: 'var(--mm-ink-soft)' }}>
+          {subtitle}
+        </p>
+      )}
     </div>
   );
 }

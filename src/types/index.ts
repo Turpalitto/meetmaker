@@ -75,6 +75,7 @@ export interface StoreState {
   // Created session
   currentSession: MeetingSession | null;
   isSaving: boolean;
+  saveError: string | null;
 
   // Actions - Creator
   setCurrentStep: (step: number) => void;

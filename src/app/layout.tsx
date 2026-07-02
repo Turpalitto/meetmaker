@@ -1,47 +1,50 @@
 import type { Metadata, Viewport } from "next";
-import { Playfair_Display, Roboto } from "next/font/google";
+import type { ReactNode } from "react";
+import { Fraunces, Inter } from "next/font/google";
 import "./globals.css";
 import { Toaster } from "@/components/ui/sonner";
 
-const roboto = Roboto({
-  subsets: ["latin", "cyrillic"],
-  weight: ["400", "500", "700"],
-  variable: "--font-roboto",
+const fraunces = Fraunces({
+  subsets: ["latin"],
+  weight: ["400", "500", "600"],
+  style: ["normal", "italic"],
+  variable: "--font-fraunces",
+  display: "swap",
 });
 
-const playfair = Playfair_Display({
+const inter = Inter({
   subsets: ["latin", "cyrillic"],
-  weight: ["500", "600", "700"],
-  variable: "--font-playfair",
+  weight: ["400", "500", "600", "700"],
+  variable: "--font-inter",
+  display: "swap",
 });
 
 export const metadata: Metadata = {
-  title: "MeetMaker — Приглашение на встречу",
+  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000"),
+  title: {
+    default: "MeetMaker — приглашение с душой",
+    template: "%s · MeetMaker",
+  },
   description:
-    "Создай красивую открытку-приглашение. Получатель сам выберет дату, время и место.",
+    "Создайте личную открытку-приглашение на встречу: свидание, кофе или прогулку. Тихая роскошь личного приглашения.",
+  applicationName: "MeetMaker",
+  openGraph: {
+    title: "MeetMaker — приглашение с душой",
+    description: "Личная открытка-приглашение на встречу: свидание, кофе или прогулка.",
+    type: "website",
+    locale: "ru_RU",
+  },
 };
 
 export const viewport: Viewport = {
-  themeColor: "#FFF8F5",
-  width: "device-width",
-  initialScale: 1,
+  themeColor: "#f7f2ec",
+  colorScheme: "light",
 };
 
-export default function RootLayout({
-  children,
-}: Readonly<{
-  children: React.ReactNode;
-}>) {
+export default function RootLayout({ children }: { children: ReactNode }) {
   return (
-    <html
-      lang="ru"
-      className={`postcard-app material-app ${roboto.variable} ${playfair.variable}`}
-      suppressHydrationWarning
-    >
-      <body
-        className="min-h-screen antialiased bg-mm-base text-mm-primary md-body font-sans"
-        suppressHydrationWarning
-      >
+    <html lang="ru" data-theme="romantic" className={`${fraunces.variable} ${inter.variable}`}>
+      <body className="antialiased">
         {children}
         <Toaster position="top-center" />
       </body>

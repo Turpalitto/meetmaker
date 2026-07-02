@@ -3,91 +3,68 @@
 import { useMeetingStore } from '@/store/useMeetingStore';
 import { WizardActions } from '@/components/WizardActions';
 import { THEME_CONFIG, THEME_ORDER } from '@/lib/themes';
-import type { CardAppearance } from '@/types';
-import { Check, Moon, Sun } from 'lucide-react';
-
-const APPEARANCE_OPTIONS: {
-  id: CardAppearance;
-  label: string;
-  icon: typeof Sun;
-}[] = [
-  { id: 'light', label: 'Светлая', icon: Sun },
-  { id: 'dark', label: 'Тёмная', icon: Moon },
-];
+import { IconCheck } from '@/components/Icons';
 
 export function StepTheme() {
   const selectedTheme = useMeetingStore((s) => s.selectedTheme);
-  const cardAppearance = useMeetingStore((s) => s.cardAppearance);
   const setSelectedTheme = useMeetingStore((s) => s.setSelectedTheme);
-  const setCardAppearance = useMeetingStore((s) => s.setCardAppearance);
   const setCurrentStep = useMeetingStore((s) => s.setCurrentStep);
   const updateSessionFromCard = useMeetingStore((s) => s.updateSessionFromCard);
   const isSaving = useMeetingStore((s) => s.isSaving);
+  const saveError = useMeetingStore((s) => s.saveError);
 
   return (
-    <div className="w-full max-w-md">
-      <div className="md-section mb-6">
-        <p className="md-overline">Настроение</p>
-        <div className="md-elevated-card divide-y divide-md-outline overflow-hidden p-0">
-          {THEME_ORDER.map((id) => {
-            const theme = THEME_CONFIG[id];
-            const Icon = theme.icon;
-            const isSelected = selectedTheme === id;
-            return (
-              <button
-                key={id}
-                type="button"
-                onClick={() => setSelectedTheme(id)}
-                className="md-list-item-interactive w-full"
-              >
+    <div className="w-full">
+      <p className="mm-eyebrow mb-4">Настроение встречи</p>
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
+        {THEME_ORDER.map((id) => {
+          const theme = THEME_CONFIG[id];
+          const isSelected = selectedTheme === id;
+          return (
+            <button
+              key={id}
+              type="button"
+              data-theme={id}
+              aria-pressed={isSelected}
+              onClick={() => setSelectedTheme(id)}
+              className="mm-slot relative flex flex-col items-center gap-2 py-6 text-center"
+              style={{ background: 'var(--mm-card-wash)' }}
+            >
+              {isSelected && (
                 <span
-                  className="md-swatch"
-                  style={{ backgroundColor: theme.primaryContainer, color: theme.onPrimaryContainer }}
+                  className="absolute right-3 top-3 grid h-5 w-5 place-items-center rounded-full"
+                  style={{ background: 'var(--mm-accent)', color: 'var(--mm-on-accent)' }}
+                  aria-hidden
                 >
-                  <Icon className="h-5 w-5" strokeWidth={2} />
+                  <IconCheck className="h-3 w-3" />
                 </span>
-                <div className="flex-1 min-w-0 text-left">
-                  <p className="md-list-title">
-                    {theme.labelRu} {theme.emoji}
-                  </p>
-                  <p className="md-list-subtitle">{theme.description}</p>
-                </div>
-                {isSelected ? (
-                  <span className="md-check-icon">
-                    <Check className="h-3.5 w-3.5" strokeWidth={3} />
-                  </span>
-                ) : null}
-              </button>
-            );
-          })}
-        </div>
+              )}
+              <span className="text-3xl" aria-hidden>
+                {theme.emoji}
+              </span>
+              <span className="mm-display text-lg">{theme.labelRu}</span>
+              <span className="text-xs" style={{ color: 'var(--mm-ink-soft)' }}>
+                {theme.description}
+              </span>
+            </button>
+          );
+        })}
       </div>
 
-      <div className="md-section mb-6 md-reveal md-reveal-d2">
-        <p className="md-overline">Оформление открытки</p>
-        <div className="flex gap-2">
-          {APPEARANCE_OPTIONS.map((opt) => {
-            const Icon = opt.icon;
-            const active = cardAppearance === opt.id;
-            return (
-              <button
-                key={opt.id}
-                type="button"
-                onClick={() => setCardAppearance(opt.id)}
-                className={`md-assist-chip flex-1 justify-center py-2.5 ${active ? 'md-assist-chip--selected' : ''}`}
-              >
-                <Icon className="h-4 w-4" strokeWidth={2} />
-                {opt.label}
-              </button>
-            );
-          })}
-        </div>
-      </div>
+      {saveError && (
+        <p
+          className="mt-4 rounded-[var(--mm-r-sm)] px-4 py-3 text-sm"
+          style={{ background: 'var(--mm-error-container)', color: 'var(--mm-error)' }}
+          role="alert"
+        >
+          {saveError}
+        </p>
+      )}
 
       <WizardActions
         onBack={() => setCurrentStep(3)}
         onContinue={() => updateSessionFromCard()}
-        continueLabel={isSaving ? 'Сохраняем…' : 'Отправить приглашение'}
+        continueLabel={isSaving ? 'Сохраняем…' : 'Создать открытку'}
         continueDisabled={isSaving}
       />
     </div>

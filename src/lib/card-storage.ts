@@ -5,6 +5,11 @@ import {
   githubUpdateCard,
   isGitHubConfigured,
 } from "@/lib/github-storage";
+import {
+  fileCreateCard,
+  fileGetCard,
+  fileUpdateCard,
+} from "@/lib/file-storage";
 import type {
   MeetingCard,
   MeetingSession,
@@ -25,8 +30,6 @@ export interface CardRow {
   personal_note?: string | null;
   appearance?: MeetingCard["appearance"] | null;
 }
-
-const memoryStore = new Map<string, CardRow>();
 
 function getSupabase(): SupabaseClient | null {
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
@@ -60,12 +63,12 @@ export function isSupabaseConfigured(): boolean {
   );
 }
 
-export type StorageBackend = "supabase" | "github" | "memory";
+export type StorageBackend = "supabase" | "github" | "file";
 
 export function getStorageBackend(): StorageBackend {
   if (isSupabaseConfigured()) return "supabase";
   if (isGitHubConfigured()) return "github";
-  return "memory";
+  return "file";
 }
 
 export async function createCard(card: MeetingCard): Promise<MeetingSession> {
@@ -100,7 +103,7 @@ export async function createCard(card: MeetingCard): Promise<MeetingSession> {
   } else if (isGitHubConfigured()) {
     await githubCreateCard(row);
   } else {
-    memoryStore.set(row.id, row);
+    await fileCreateCard(row);
   }
 
   return rowToSession(row);
@@ -123,7 +126,7 @@ export async function getCard(id: string): Promise<MeetingSession | null> {
     return row ? rowToSession(row) : null;
   }
 
-  const row = memoryStore.get(id);
+  const row = await fileGetCard(id);
   return row ? rowToSession(row) : null;
 }
 
@@ -148,9 +151,6 @@ export async function updateCard(
     return updated ? rowToSession(updated) : null;
   }
 
-  const row = memoryStore.get(id);
-  if (!row) return null;
-  const updated = { ...row, ...patch };
-  memoryStore.set(id, updated);
-  return rowToSession(updated);
+  const updated = await fileUpdateCard(id, patch);
+  return updated ? rowToSession(updated) : null;
 }
