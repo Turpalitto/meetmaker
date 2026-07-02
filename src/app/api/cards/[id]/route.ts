@@ -1,5 +1,7 @@
 import { db } from "@/db";
 import { cards } from "@/db/schema";
+import type { Slot } from "@/db/schema";
+import { sendChoiceNotification } from "@/lib/email";
 import { eq } from "drizzle-orm";
 import { NextRequest } from "next/server";
 
@@ -7,7 +9,7 @@ export const dynamic = "force-dynamic";
 
 export async function GET(
   _req: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
+  { params }: { params: Promise<{ id: string }> },
 ) {
   try {
     const { id } = await params;
@@ -26,7 +28,7 @@ export async function GET(
 
 export async function PATCH(
   req: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
+  { params }: { params: Promise<{ id: string }> },
 ) {
   try {
     const { id } = await params;
@@ -54,6 +56,27 @@ export async function PATCH(
       .set(updateData)
       .where(eq(cards.id, id))
       .returning();
+
+    if (
+      updated.status === "accepted" &&
+      updated.notifyEmail &&
+      updated.chosenSlotId
+    ) {
+      const slots = updated.slots as Slot[];
+      const slot = slots.find((s) => s.id === updated.chosenSlotId);
+      if (slot) {
+        const base =
+          process.env.NEXT_PUBLIC_SITE_URL?.replace(/\/$/, "") ??
+          "https://meetmaker.vercel.app";
+        void sendChoiceNotification({
+          to: updated.notifyEmail,
+          creatorName: updated.creatorName,
+          recipientName: updated.recipientName,
+          slot,
+          cardUrl: `${base}/status/${updated.id}`,
+        });
+      }
+    }
 
     return Response.json({ card: updated });
   } catch (err) {

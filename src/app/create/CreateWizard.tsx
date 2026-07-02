@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { THEMES, EMOJIS, getTheme } from "@/lib/themes";
+import { THEMES, EMOJIS, MOOD_THEME_IDS, getTheme } from "@/lib/themes";
 import type { Slot } from "@/db/schema";
 import { nanoid } from "nanoid";
 import { cn } from "@/lib/utils";
@@ -11,10 +11,10 @@ import { cn } from "@/lib/utils";
 type Step = "info" | "slots" | "style" | "preview";
 
 const STEPS: { id: Step; label: string; emoji: string }[] = [
-  { id: "info", label: "Имена", emoji: "👤" },
+  { id: "info", label: "О встрече", emoji: "💌" },
   { id: "slots", label: "Варианты", emoji: "📅" },
-  { id: "style", label: "Стиль", emoji: "🎨" },
-  { id: "preview", label: "Превью", emoji: "👁️" },
+  { id: "style", label: "Настроение", emoji: "✨" },
+  { id: "preview", label: "Готово", emoji: "👁️" },
 ];
 
 const DEFAULT_SLOT = (): Slot => ({
@@ -157,8 +157,8 @@ export default function CreateWizard() {
         <div className="bg-white rounded-3xl shadow-xl p-8 border border-white/80">
           {step === "info" && (
             <div>
-              <h2 className="text-2xl font-bold text-slate-900 mb-2">👤 Кто и кому?</h2>
-              <p className="text-slate-500 mb-8">Укажи имена — они появятся на открытке</p>
+              <h2 className="font-postcard text-2xl font-bold text-slate-900 mb-2">Расскажи о встрече</h2>
+              <p className="text-slate-500 mb-8">Имена и пару тёплых слов — они появятся на открытке</p>
 
               <div className="space-y-5">
                 <div>
@@ -183,15 +183,17 @@ export default function CreateWizard() {
                 </div>
                 <div>
                   <label className="block text-sm font-semibold text-slate-700 mb-2">
-                    Сообщение <span className="text-slate-400 font-normal">(необязательно)</span>
+                    Короткая записка <span className="text-slate-400 font-normal">(необязательно)</span>
                   </label>
                   <textarea
                     value={message}
                     onChange={(e) => setMessage(e.target.value)}
-                    placeholder="Привет! Хочу пригласить тебя на встречу..."
+                    placeholder="Давно хотел(а) с тобой встретиться..."
                     rows={3}
+                    maxLength={200}
                     className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:border-pink-400 focus:ring-2 focus:ring-pink-100 outline-none transition text-slate-900 placeholder:text-slate-300 resize-none"
                   />
+                  <p className="text-xs text-slate-400 mt-1 text-right">{message.length}/200</p>
                 </div>
                 <div>
                   <label className="block text-sm font-semibold text-slate-700 mb-2">
@@ -204,6 +206,7 @@ export default function CreateWizard() {
                     placeholder="your@email.com"
                     className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:border-pink-400 focus:ring-2 focus:ring-pink-100 outline-none transition text-slate-900 placeholder:text-slate-300"
                   />
+                  <p className="text-xs text-slate-400 mt-1">Пришлём письмо, когда друг выберет время</p>
                 </div>
               </div>
             </div>
@@ -211,8 +214,8 @@ export default function CreateWizard() {
 
           {step === "slots" && (
             <div>
-              <h2 className="text-2xl font-bold text-slate-900 mb-2">📅 Варианты встречи</h2>
-              <p className="text-slate-500 mb-8">Добавь от 1 до 5 вариантов — получатель выберет удобный</p>
+              <h2 className="font-postcard text-2xl font-bold text-slate-900 mb-2">Когда тебе удобно?</h2>
+              <p className="text-slate-500 mb-8">Предложи от 1 до 5 вариантов — пусть выберет</p>
 
               <div className="space-y-4">
                 {slots.map((slot, i) => (
@@ -276,23 +279,25 @@ export default function CreateWizard() {
 
           {step === "style" && (
             <div>
-              <h2 className="text-2xl font-bold text-slate-900 mb-2">🎨 Стиль открытки</h2>
-              <p className="text-slate-500 mb-8">Выбери цветовую тему и эмодзи</p>
+              <h2 className="font-postcard text-2xl font-bold text-slate-900 mb-2">Настроение открытки</h2>
+              <p className="text-slate-500 mb-8">Свидание, кофе или прогулка — какой вайб передаём?</p>
 
               <div className="mb-8">
-                <label className="block text-sm font-semibold text-slate-700 mb-3">Цветовая тема</label>
-                <div className="grid grid-cols-3 gap-3">
-                  {THEMES.map((t) => (
+                <label className="block text-sm font-semibold text-slate-700 mb-3">Настроение</label>
+                <div className="grid grid-cols-2 gap-3">
+                  {THEMES.filter((t) => MOOD_THEME_IDS.includes(t.id as (typeof MOOD_THEME_IDS)[number])).map((t) => (
                     <button
                       key={t.id}
+                      type="button"
                       onClick={() => setTheme(t.id)}
                       className={cn(
-                        "relative p-4 rounded-2xl border-2 transition-all duration-200 overflow-hidden",
-                        theme === t.id ? "border-slate-900 scale-105 shadow-md" : "border-transparent hover:border-slate-200"
+                        "relative p-4 rounded-2xl border-2 transition-all duration-200 overflow-hidden text-left",
+                        theme === t.id ? "border-slate-900 scale-[1.02] shadow-md" : "border-transparent hover:border-slate-200",
                       )}
                     >
                       <div className={cn("h-10 rounded-xl bg-gradient-to-r mb-2", t.gradient)} />
-                      <span className="text-sm font-medium text-slate-700">{t.label}</span>
+                      <span className="text-sm font-semibold text-slate-800 block">{t.label}</span>
+                      <span className="text-xs text-slate-500">{t.description}</span>
                       {theme === t.id && (
                         <div className="absolute top-2 right-2 w-5 h-5 rounded-full bg-slate-900 text-white flex items-center justify-center text-xs">✓</div>
                       )}
@@ -325,16 +330,20 @@ export default function CreateWizard() {
 
           {step === "preview" && (
             <div>
-              <h2 className="text-2xl font-bold text-slate-900 mb-2">👁️ Предпросмотр</h2>
-              <p className="text-slate-500 mb-6">Вот как будет выглядеть твоя открытка</p>
+              <h2 className="font-postcard text-2xl font-bold text-slate-900 mb-2">Почти готово</h2>
+              <p className="text-slate-500 mb-6">Вот как увидит открытку {recipientName}</p>
 
               <div className="rounded-2xl overflow-hidden shadow-lg border border-slate-100 mb-6">
                 <div className={cn("bg-gradient-to-br p-6 text-white", currentTheme.gradient)}>
                   <div className="text-4xl mb-3">{emoji}</div>
-                  <p className="text-white/70 text-sm mb-1">Привет, {recipientName}! 👋</p>
-                  <h3 className="text-xl font-bold mb-1">Приглашение на встречу</h3>
-                  <p className="text-white/70 text-sm">от {creatorName}</p>
-                  {message && <p className="mt-3 text-white/90 text-sm italic">&ldquo;{message}&rdquo;</p>}
+                  <p className="text-white/70 text-sm mb-1">Привет, {recipientName}!</p>
+                  <h3 className="font-postcard text-xl font-bold mb-1">{creatorName} приглашает тебя</h3>
+                  <p className="text-white/70 text-sm">{currentTheme.tagline}</p>
+                  {message && (
+                    <blockquote className="postcard-note mt-3 text-white/90 text-sm">
+                      {message}
+                    </blockquote>
+                  )}
                 </div>
                 <div className="bg-white p-5">
                   <p className="text-slate-500 text-xs font-semibold uppercase tracking-wider mb-3">Выбери удобное время:</p>

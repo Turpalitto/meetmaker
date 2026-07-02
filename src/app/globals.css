@@ -65,3 +65,42 @@
   0% { background-position: -200% 0; }
   100% { background-position: 200% 0; }
 }
+
+.font-postcard {
+  font-family: var(--font-playfair), "Playfair Display", Georgia, serif;
+}
+
+.postcard-note {
+  border-left: 3px solid rgba(255, 255, 255, 0.5);
+  padding: 0.75rem 1rem;
+  margin: 0;
+  border-radius: 0 12px 12px 0;
+  background: rgba(255, 255, 255, 0.12);
+  font-style: italic;
+  line-height: 1.5;
+}
+
+.postcard-sticker {
+  animation: postcard-float 7s ease-in-out infinite;
+}
+
+@keyframes postcard-float {
+  0%, 100% { transform: translateY(0) rotate(-6deg); }
+  50% { transform: translateY(-10px) rotate(6deg); }
+}
+
+.confetti-particle {
+  animation: confetti-fall 2.8s ease-out forwards;
+}
+
+@keyframes confetti-fall {
+  0% { opacity: 1; transform: translateY(0) rotate(0deg); }
+  100% { opacity: 0; transform: translateY(160px) rotate(240deg); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .postcard-sticker,
+  .confetti-particle {
+    animation: none;
+  }
+}

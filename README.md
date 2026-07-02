@@ -46,7 +46,7 @@ npx vercel env pull .env.local
 npm run db:apply
 ```
 
-> **Важно:** ветка `main` использует таблицу `cards` (новая схема). Старая `master` на Vercel использовала `meeting_cards` — перед переключением деплоя на `main` нужно применить `supabase/schema.sql`.
+> **Ветки:** `main` — актуальный продукт (Drizzle + `cards`). Ветка `master` устарела; лучшие идеи из неё (открыточный UX, записка, .ics) перенесены в `main`.
 
 ## Маршруты
 

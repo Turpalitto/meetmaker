@@ -3,8 +3,7 @@
 import { useState, useEffect, useCallback } from "react";
 import Link from "next/link";
 import { getTheme } from "@/lib/themes";
-import { formatDateTime } from "@/lib/utils";
-import { cn } from "@/lib/utils";
+import { formatDateTime, downloadICS, cn } from "@/lib/utils";
 import type { Card, Slot } from "@/db/schema";
 
 export default function StatusView({ card: initialCard }: { card: Card }) {
@@ -55,12 +54,12 @@ export default function StatusView({ card: initialCard }: { card: Card }) {
 
   const statusInfo = {
     pending: {
-      emoji: "⏳",
-      label: "Ожидает ответа",
+      emoji: "💌",
+      label: "Ждём ответ",
       color: "text-amber-600",
       bg: "bg-amber-50",
       border: "border-amber-200",
-      desc: `${card.recipientName} ещё не выбрал(а) вариант`,
+      desc: `${card.recipientName} ещё не выбрал(а) — это нормально`,
     },
     accepted: {
       emoji: "✅",
@@ -128,12 +127,21 @@ export default function StatusView({ card: initialCard }: { card: Card }) {
 
         {card.status === "accepted" && chosenSlot && (
           <div className="rounded-2xl border border-emerald-200 bg-emerald-50 p-5 mb-6">
-            <p className="text-xs font-bold uppercase tracking-wider text-emerald-500 mb-3">Выбранное время встречи</p>
+            <p className="text-xs font-bold uppercase tracking-wider text-emerald-500 mb-3">Выбранное время</p>
             <div className="flex items-start gap-4">
               <span className="text-4xl">🗓️</span>
-              <div>
+              <div className="flex-1">
                 <p className="font-bold text-slate-900 text-xl">{formatDateTime(chosenSlot.date, chosenSlot.time)}</p>
                 <p className="text-slate-500 mt-1">📍 {chosenSlot.place}</p>
+                <button
+                  type="button"
+                  onClick={() =>
+                    downloadICS(chosenSlot, `Встреча с ${card.recipientName}`)
+                  }
+                  className="mt-4 px-4 py-2 rounded-xl bg-emerald-600 text-white text-sm font-semibold hover:bg-emerald-700 transition-colors"
+                >
+                  📅 Добавить в календарь
+                </button>
               </div>
             </div>
           </div>
