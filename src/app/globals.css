@@ -6,39 +6,42 @@
    ============================================================ */
 
 @theme {
-  --font-display: var(--font-fraunces), Georgia, "Times New Roman", serif;
-  --font-ui: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  /* Редизайн «Тёплая бумага»: единый гротеск для дисплея и UI */
+  --font-display: var(--font-golos), ui-sans-serif, system-ui, sans-serif;
+  --font-ui: var(--font-golos), ui-sans-serif, system-ui, sans-serif;
 
-  --color-ink: #2c2622;
-  --color-ink-soft: #6b625b;
-  --color-paper: #f7f2ec;
+  --color-ink: #3A2A24;
+  --color-ink-soft: #7a6355;
+  --color-paper: #FBF2E9;
 }
 
 :root {
-  /* ---- Base surfaces (light by default: открытка = подарок) ---- */
-  --mm-bg: #f7f2ec; /* тёплый бумажный фон */
-  --mm-bg-veil: #fbf8f4;
-  --mm-surface: #fffdfb; /* карточка */
-  --mm-surface-2: #f3ece3;
-  --mm-line: #e7ddd1; /* тонкие разделители */
-  --mm-line-strong: #d8cbb9;
+  /* ---- Base surfaces ---- */
+  --mm-bg: #FBF2E9;
+  --mm-bg-veil: #FCF5EE;
+  --mm-surface: #FFFBF6;
+  --mm-surface-2: #F3E7DB;
+  --mm-line: #EAD8C7;
+  --mm-line-strong: #E0C9B4;
 
   /* ---- Text ---- */
-  --mm-ink: #2c2622; /* основной текст, AA на surface */
-  --mm-ink-soft: #6b625b; /* вторичный */
-  --mm-ink-faint: #9b918a; /* placeholder */
+  --mm-ink: #3A2A24;
+  --mm-ink-soft: #7a6355;
+  --mm-ink-faint: #a68d7d;
 
-  /* ---- Accent (default = date/вечер) ---- */
-  --mm-accent: #b8654f; /* терракота-роза */
-  --mm-accent-strong: #9c4f3d;
-  --mm-on-accent: #fff8f4;
-  --mm-container: #f6e2d9; /* soft chip / container */
-  --mm-on-container: #7a3826;
+  /* ---- Accent (default = date/свидание) ---- */
+  --mm-accent: #C2603D;
+  --mm-accent-strong: #A34E30;
+  --mm-on-accent: #FFF7F0;
+  --mm-container: #FBEADF;
+  --mm-on-container: #6b4a3c;
   --mm-accent-soft: color-mix(in srgb, var(--mm-accent) 14%, var(--mm-surface));
-  --mm-glow: rgba(184, 101, 79, 0.16);
+  --mm-glow: rgba(194, 96, 61, 0.16);
+  /* декоративная «лента» открытки (опционально) */
+  --mm-ribbon: #D98A76;
 
   /* ---- Semantic ---- */
-  --mm-success: #5f7a52;
+  --mm-success: #5E8A5A;
   --mm-success-container: #e6ecdc;
   --mm-error: #a9483f;
   --mm-error-container: #f6e0dc;
@@ -62,39 +65,42 @@
    ============================================================ */
 
 [data-theme="date"] {
-  --mm-accent: #b8654f;
-  --mm-accent-strong: #9c4f3d;
-  --mm-on-accent: #fff8f4;
-  --mm-container: #f6e2d9;
-  --mm-on-container: #7a3826;
-  --mm-glow: rgba(184, 101, 79, 0.18);
-  --mm-card-wash: radial-gradient(120% 90% at 80% 0%, #f4dfd2 0%, #fbf1ea 45%, #fffdfb 100%);
-  --mm-page-wash: radial-gradient(90% 60% at 15% 0%, #f3ddd1 0%, rgba(247, 242, 236, 0) 60%),
-    radial-gradient(80% 50% at 100% 100%, #efd6cf 0%, rgba(247, 242, 236, 0) 55%);
+  --mm-accent: #C2603D;
+  --mm-accent-strong: #A34E30;
+  --mm-on-accent: #FFF7F0;
+  --mm-container: #FBEADF;
+  --mm-on-container: #6b4a3c;
+  --mm-glow: rgba(194, 96, 61, 0.18);
+  --mm-ribbon: #D98A76;
+  --mm-card-wash: radial-gradient(120% 90% at 80% 0%, #F5E2D4 0%, #FBF2E9 45%, #FFFBF6 100%);
+  --mm-page-wash: radial-gradient(90% 60% at 15% 0%, #F3DECF 0%, rgba(251, 242, 233, 0) 60%),
+    radial-gradient(80% 50% at 100% 100%, #EBD6C6 0%, rgba(251, 242, 233, 0) 55%);
 }
 
 [data-theme="coffee"] {
-  --mm-accent: #9a6a45;
-  --mm-accent-strong: #7f5535;
-  --mm-on-accent: #fdf6ee;
-  --mm-container: #efe0cd;
+  --mm-accent: #A5673A;
+  --mm-accent-strong: #85522C;
+  --mm-on-accent: #FDF6EE;
+  --mm-container: #F3E7D6;
   --mm-on-container: #6a4322;
-  --mm-glow: rgba(154, 106, 69, 0.18);
-  --mm-card-wash: radial-gradient(120% 90% at 80% 0%, #efdcc4 0%, #f8efe2 45%, #fffdfb 100%);
-  --mm-page-wash: radial-gradient(90% 60% at 15% 0%, #ecd8bd 0%, rgba(247, 242, 236, 0) 60%),
-    radial-gradient(80% 50% at 100% 100%, #e6d3b8 0%, rgba(247, 242, 236, 0) 55%);
+  --mm-glow: rgba(165, 103, 58, 0.18);
+  --mm-ribbon: #C79A6B;
+  --mm-card-wash: radial-gradient(120% 90% at 80% 0%, #EFDCC4 0%, #F8EFE2 45%, #FFFBF6 100%);
+  --mm-page-wash: radial-gradient(90% 60% at 15% 0%, #ECD8BD 0%, rgba(251, 242, 233, 0) 60%),
+    radial-gradient(80% 50% at 100% 100%, #E6D3B8 0%, rgba(251, 242, 233, 0) 55%);
 }
 
 [data-theme="walk"] {
-  --mm-accent: #5f7a58;
-  --mm-accent-strong: #4c6446;
-  --mm-on-accent: #f6faf2;
-  --mm-container: #e2ecd9;
+  --mm-accent: #5E8A5A;
+  --mm-accent-strong: #4A7046;
+  --mm-on-accent: #F6FAF2;
+  --mm-container: #E6EFE0;
   --mm-on-container: #3c5335;
-  --mm-glow: rgba(95, 122, 88, 0.18);
-  --mm-card-wash: radial-gradient(120% 90% at 80% 0%, #dcecd6 0%, #eef6ea 45%, #fffdfb 100%);
-  --mm-page-wash: radial-gradient(90% 60% at 15% 0%, #dcecd4 0%, rgba(247, 242, 236, 0) 60%),
-    radial-gradient(80% 50% at 100% 100%, #d6e7ce 0%, rgba(247, 242, 236, 0) 55%);
+  --mm-glow: rgba(94, 138, 90, 0.18);
+  --mm-ribbon: #8FB985;
+  --mm-card-wash: radial-gradient(120% 90% at 80% 0%, #DCECD6 0%, #EEF6EA 45%, #FFFBF6 100%);
+  --mm-page-wash: radial-gradient(90% 60% at 15% 0%, #DCECD4 0%, rgba(251, 242, 233, 0) 60%),
+    radial-gradient(80% 50% at 100% 100%, #D6E7CE 0%, rgba(251, 242, 233, 0) 55%);
 }
 
 [data-theme="friends"] {
@@ -169,15 +175,15 @@ body::before {
 
 .mm-display {
   font-family: var(--font-display);
-  font-weight: 500;
-  letter-spacing: -0.015em;
+  font-weight: 700;
+  letter-spacing: -0.02em;
   line-height: 1.05;
 }
 
 .mm-postcard-title {
   font-family: var(--font-display);
-  font-weight: 500;
-  letter-spacing: -0.02em;
+  font-weight: 800;
+  letter-spacing: -0.03em;
   line-height: 1.02;
   font-size: clamp(2.1rem, 8vw, 3.6rem);
 }
@@ -193,7 +199,7 @@ body::before {
 
 .mm-serif-quote {
   font-family: var(--font-display);
-  font-style: italic;
+  font-style: normal;
   font-weight: 400;
   line-height: 1.5;
 }
@@ -778,32 +784,34 @@ input[type="time"] {
    ============================================================ */
 
 [data-theme="romantic"] {
-  --mm-accent: #b8654f;
-  --mm-accent-strong: #9c4f3d;
-  --mm-on-accent: #fff8f4;
-  --mm-container: #f6e2d9;
-  --mm-on-container: #7a3826;
-  --mm-glow: rgba(184, 101, 79, 0.18);
-  --mm-card-wash: radial-gradient(120% 90% at 80% 0%, #f4dfd2 0%, #fbf1ea 45%, #fffdfb 100%);
-  --mm-page-wash: radial-gradient(90% 60% at 15% 0%, #f3ddd1 0%, rgba(247, 242, 236, 0) 60%),
-    radial-gradient(80% 50% at 100% 100%, #efd6cf 0%, rgba(247, 242, 236, 0) 55%);
+  --mm-accent: #C2603D;
+  --mm-accent-strong: #A34E30;
+  --mm-on-accent: #FFF7F0;
+  --mm-container: #FBEADF;
+  --mm-on-container: #6b4a3c;
+  --mm-glow: rgba(194, 96, 61, 0.18);
+  --mm-ribbon: #D98A76;
+  --mm-card-wash: radial-gradient(120% 90% at 80% 0%, #F5E2D4 0%, #FBF2E9 45%, #FFFBF6 100%);
+  --mm-page-wash: radial-gradient(90% 60% at 15% 0%, #F3DECF 0%, rgba(251, 242, 233, 0) 60%),
+    radial-gradient(80% 50% at 100% 100%, #EBD6C6 0%, rgba(251, 242, 233, 0) 55%);
 }
 
 [data-theme="minimal"] {
-  --mm-accent: #5f7a58;
-  --mm-accent-strong: #4c6446;
-  --mm-on-accent: #f6faf2;
-  --mm-container: #e2ecd9;
+  --mm-accent: #5E8A5A;
+  --mm-accent-strong: #4A7046;
+  --mm-on-accent: #F6FAF2;
+  --mm-container: #E6EFE0;
   --mm-on-container: #3c5335;
-  --mm-glow: rgba(95, 122, 88, 0.18);
-  --mm-card-wash: radial-gradient(120% 90% at 80% 0%, #dcecd6 0%, #eef6ea 45%, #fffdfb 100%);
-  --mm-page-wash: radial-gradient(90% 60% at 15% 0%, #dcecd4 0%, rgba(247, 242, 236, 0) 60%),
-    radial-gradient(80% 50% at 100% 100%, #d6e7ce 0%, rgba(247, 242, 236, 0) 55%);
+  --mm-glow: rgba(94, 138, 90, 0.18);
+  --mm-ribbon: #8FB985;
+  --mm-card-wash: radial-gradient(120% 90% at 80% 0%, #DCECD6 0%, #EEF6EA 45%, #FFFBF6 100%);
+  --mm-page-wash: radial-gradient(90% 60% at 15% 0%, #DCECD4 0%, rgba(251, 242, 233, 0) 60%),
+    radial-gradient(80% 50% at 100% 100%, #D6E7CE 0%, rgba(251, 242, 233, 0) 55%);
 }
 
 :root {
-  --mm-page-wash: radial-gradient(90% 60% at 15% 0%, #f3ddd1 0%, rgba(247, 242, 236, 0) 60%),
-    radial-gradient(80% 50% at 100% 100%, #efd6cf 0%, rgba(247, 242, 236, 0) 55%);
+  --mm-page-wash: radial-gradient(90% 60% at 15% 0%, #F3DECF 0%, rgba(251, 242, 233, 0) 60%),
+    radial-gradient(80% 50% at 100% 100%, #EBD6C6 0%, rgba(251, 242, 233, 0) 55%);
 }
 
 /* ============================================================
@@ -834,7 +842,7 @@ input[type="time"] {
 
 .md-headline-emphasis {
   font-family: var(--font-display);
-  font-weight: 500;
+  font-weight: 700;
   font-size: clamp(1.75rem, 6vw, 2.25rem);
   line-height: 1.15;
   color: var(--mm-ink);
@@ -842,7 +850,7 @@ input[type="time"] {
 
 .md-headline {
   font-family: var(--font-display);
-  font-weight: 500;
+  font-weight: 700;
   font-size: clamp(1.5rem, 5vw, 2rem);
   color: var(--mm-ink);
 }
@@ -1058,7 +1066,7 @@ input[type="time"] {
 
 .md-postcard-title {
   font-family: var(--font-display);
-  font-weight: 500;
+  font-weight: 800;
   font-size: clamp(1.85rem, 6vw, 2.5rem);
   line-height: 1.1;
   color: var(--mm-ink);
@@ -1079,7 +1087,7 @@ input[type="time"] {
   border-radius: 0 12px 12px 0;
   background: color-mix(in srgb, var(--mm-container) 65%, transparent);
   font-family: var(--font-display);
-  font-style: italic;
+  font-style: normal;
   font-size: 1rem;
   line-height: 1.5;
   color: var(--mm-ink-soft);
@@ -1101,7 +1109,7 @@ input[type="time"] {
   text-align: center;
   font-family: var(--font-display);
   font-size: clamp(1.35rem, 4.5vw, 1.75rem);
-  font-weight: 500;
+  font-weight: 700;
   padding: 0.25rem 0;
 }
 
@@ -1279,7 +1287,7 @@ input[type="time"] {
 .ios-large-title {
   font-family: var(--font-display);
   font-size: clamp(1.5rem, 5vw, 2rem);
-  font-weight: 500;
+  font-weight: 700;
   color: var(--mm-ink);
 }
 .ios-footnote { font-size: 0.95rem; color: var(--mm-ink-soft); }

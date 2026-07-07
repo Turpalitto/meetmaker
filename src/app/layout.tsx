@@ -1,21 +1,16 @@
 import type { Metadata, Viewport } from "next";
 import type { ReactNode } from "react";
-import { Fraunces, Inter } from "next/font/google";
+import { Golos_Text } from "next/font/google";
 import "./globals.css";
 import { Toaster } from "@/components/ui/sonner";
 
-const fraunces = Fraunces({
-  subsets: ["latin"],
-  weight: ["400", "500", "600"],
-  style: ["normal", "italic"],
-  variable: "--font-fraunces",
-  display: "swap",
-});
-
-const inter = Inter({
+// Редизайн «Тёплая бумага»: единый гротеск с полной кириллицей.
+// Одна переменная используется и для дисплейных заголовков, и для UI —
+// в globals.css --font-display и --font-ui указывают на неё же.
+const golos = Golos_Text({
   subsets: ["latin", "cyrillic"],
-  weight: ["400", "500", "600", "700"],
-  variable: "--font-inter",
+  weight: ["400", "500", "600", "700", "800", "900"],
+  variable: "--font-golos",
   display: "swap",
 });
 
@@ -26,7 +21,7 @@ export const metadata: Metadata = {
     template: "%s · MeetMaker",
   },
   description:
-    "Создайте личную открытку-приглашение на встречу: свидание, кофе или прогулку. Тихая роскошь личного приглашения.",
+    "Создайте личную открытку-приглашение на встречу: свидание, кофе или прогулку. Тёплое «да» вместо сухого сообщения.",
   applicationName: "MeetMaker",
   openGraph: {
     title: "MeetMaker — приглашение с душой",
@@ -37,13 +32,13 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: "#f7f2ec",
+  themeColor: "#FBF2E9",
   colorScheme: "light",
 };
 
 export default function RootLayout({ children }: { children: ReactNode }) {
   return (
-    <html lang="ru" data-theme="romantic" className={`${fraunces.variable} ${inter.variable}`}>
+    <html lang="ru" data-theme="romantic" className={golos.variable}>
       <body className="antialiased">
         {children}
         <Toaster position="top-center" />

@@ -22,16 +22,18 @@ export interface ThemeConfig {
 
 export const THEME_ORDER: ThemeType[] = ["romantic", "coffee", "minimal"];
 
+// Редизайн «Тёплая бумага»: акценты приведены к тёплой кремово-терракотовой
+// палитре. Значения синхронизированы с [data-theme] в globals.css.
 export const THEME_CONFIG: Record<ThemeType, ThemeConfig> = {
   romantic: {
     id: "romantic",
     label: "Date",
     labelRu: "Свидание",
     description: "Нежно, по-вечернему",
-    gradient: "from-pink-300 to-rose-400",
-    accent: "#E8919F",
-    primaryContainer: "#FFD8E4",
-    onPrimaryContainer: "#5C3A42",
+    gradient: "from-[#D98A76] to-[#C2603D]",
+    accent: "#C2603D",
+    primaryContainer: "#FBEADF",
+    onPrimaryContainer: "#6b4a3c",
     emoji: "💗",
     stickers: ["💗", "✨", "🌸", "🕯️"],
     decor: ["rose", "sparkle"],
@@ -45,10 +47,10 @@ export const THEME_CONFIG: Record<ThemeType, ThemeConfig> = {
     label: "Coffee",
     labelRu: "Кофе",
     description: "Уютно и по-домашнему",
-    gradient: "from-amber-300 to-orange-400",
-    accent: "#D4A574",
-    primaryContainer: "#FFDCB8",
-    onPrimaryContainer: "#5C3D1E",
+    gradient: "from-[#C79A6B] to-[#A5673A]",
+    accent: "#A5673A",
+    primaryContainer: "#F3E7D6",
+    onPrimaryContainer: "#6a4322",
     emoji: "☕",
     stickers: ["☕", "🥐", "✨", "🤎"],
     decor: ["steam", "warm"],
@@ -61,10 +63,10 @@ export const THEME_CONFIG: Record<ThemeType, ThemeConfig> = {
     label: "Walk",
     labelRu: "Прогулка",
     description: "Свежо и без суеты",
-    gradient: "from-emerald-300 to-teal-400",
-    accent: "#8FB9A8",
-    primaryContainer: "#D4EDE4",
-    onPrimaryContainer: "#2D4A3E",
+    gradient: "from-[#8FB985] to-[#5E8A5A]",
+    accent: "#5E8A5A",
+    primaryContainer: "#E6EFE0",
+    onPrimaryContainer: "#3c5335",
     emoji: "🌿",
     stickers: ["🌿", "🦋", "✨", "🌤️"],
     decor: ["leaf", "breeze"],
