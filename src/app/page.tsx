@@ -18,9 +18,9 @@ export default function HomePage() {
       <section className="mx-auto max-w-3xl px-5 pt-10 pb-16 text-center sm:pt-16">
         <p className="mm-eyebrow mm-fade">Приглашение с душой</p>
         <h1 className="mm-display mm-rise mm-delay-1 mt-5 text-[clamp(2.6rem,10vw,5rem)]">
-          Тихая роскошь
+          Тёплое приглашение
           <br />
-          <span style={{ color: "var(--mm-accent)" }}>личного приглашения</span>
+          <span style={{ color: "var(--mm-accent)" }}>вместо сухого сообщения</span>
         </h1>
         <p
           className="mm-rise mm-delay-2 mx-auto mt-6 max-w-xl text-lg leading-relaxed"

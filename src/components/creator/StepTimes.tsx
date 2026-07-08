@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { useMeetingStore } from '@/store/useMeetingStore';
 import { WizardActions } from '@/components/WizardActions';
 import { Clock, Plus, Check } from 'lucide-react';
-import { formatDate, formatTime } from '@/lib/utils';
+import { formatDate, formatTime, pluralRu } from '@/lib/utils';
 
 const TIME_GROUPS = [
   { label: 'Утро', times: ['09:00', '10:00', '11:00', '12:00'] },
@@ -129,7 +129,9 @@ export function StepTimes() {
               className="text-sm"
               style={{ color: d.times.length > 0 ? 'var(--mm-accent)' : 'var(--mm-ink-soft)' }}
             >
-              {d.times.length > 0 ? `${d.times.length} вариантов` : 'не выбрано'}
+              {d.times.length > 0
+                ? `${d.times.length} ${pluralRu(d.times.length, 'вариант', 'варианта', 'вариантов')}`
+                : 'не выбрано'}
             </span>
           </div>
         ))}

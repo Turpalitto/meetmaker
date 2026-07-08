@@ -1,7 +1,7 @@
 'use client';
 
 import { useMeetingStore } from '@/store/useMeetingStore';
-import { formatDateShort } from '@/lib/utils';
+import { formatDateShort, pluralRu } from '@/lib/utils';
 import { getThemeConfig, greetingForRecipient } from '@/lib/themes';
 import { updateCardStatus } from '@/lib/api';
 import { PostcardFrame } from '@/components/PostcardFrame';
@@ -77,7 +77,8 @@ export function RecipientFlow() {
                   <span key={d.date} className="mm-chip">
                     <IconClock className="h-3.5 w-3.5" />
                     {formatDateShort(d.date)}
-                    {d.times.length > 0 && ` · ${d.times.length} времени`}
+                    {d.times.length > 0 &&
+                      ` · ${d.times.length} ${pluralRu(d.times.length, 'вариант', 'варианта', 'вариантов')} времени`}
                   </span>
                 ))}
                 {card.places.map((p) => (

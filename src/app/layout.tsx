@@ -38,8 +38,8 @@ export const viewport: Viewport = {
 
 export default function RootLayout({ children }: { children: ReactNode }) {
   return (
-    <html lang="ru" data-theme="romantic" className={golos.variable}>
-      <body className="antialiased">
+    <html lang="ru" data-theme="romantic" data-scroll-behavior="smooth" className={golos.variable}>
+      <body className="antialiased" suppressHydrationWarning>
         {children}
         <Toaster position="top-center" />
       </body>

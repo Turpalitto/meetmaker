@@ -2,7 +2,7 @@
 
 import { useMeetingStore } from '@/store/useMeetingStore';
 import { Calendar, ChevronRight } from 'lucide-react';
-import { formatDate } from '@/lib/utils';
+import { formatDate, pluralRu } from '@/lib/utils';
 
 export function RecipientStepDates() {
   const card = useMeetingStore((s) => s.currentSession?.card);
@@ -39,7 +39,9 @@ export function RecipientStepDates() {
               </div>
               <div className="flex-1 min-w-0 text-left">
                 <p className="ios-cell-title">{formatDate(d.date)}</p>
-                <p className="ios-cell-subtitle">{d.times.length} вариантов времени</p>
+                <p className="ios-cell-subtitle">
+                  {d.times.length} {pluralRu(d.times.length, 'вариант', 'варианта', 'вариантов')} времени
+                </p>
               </div>
               <ChevronRight className="h-5 w-5 ios-cell-chevron" strokeWidth={2} />
             </button>

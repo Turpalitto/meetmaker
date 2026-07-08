@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import { useParams } from 'next/navigation';
 import Link from 'next/link';
 import { fetchCard } from '@/lib/api';
-import { choiceToLabel, formatDateShort, generateShareUrl } from '@/lib/utils';
+import { choiceToLabel, generateShareUrl } from '@/lib/utils';
 import { getThemeConfig } from '@/lib/themes';
 import type { MeetingSession, MeetingStatus } from '@/types';
 import { IconCheck, IconClock, IconCopy, IconPin, IconTelegram, IconWhatsapp } from '@/components/Icons';
@@ -155,9 +155,6 @@ export default function StatusPage() {
                   </p>
                   <p className="mm-display mt-2 text-lg" style={{ color: 'var(--mm-on-container)' }}>
                     {choiceToLabel(session.recipientChoice)}
-                  </p>
-                  <p className="mt-1 text-sm" style={{ color: 'var(--mm-on-container)' }}>
-                    {formatDateShort(session.recipientChoice.date)}
                   </p>
                 </div>
               )}
