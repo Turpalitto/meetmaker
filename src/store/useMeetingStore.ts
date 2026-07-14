@@ -1,16 +1,9 @@
 import { create } from "zustand";
 import { saveCard } from "@/lib/api";
-import type {
-  StoreState,
-  MeetingCard,
-  MeetingSession,
-  RecipientChoice,
-  Place,
-  CardAppearance,
-} from "@/types";
+import type { StoreState, MeetingCard, Place } from "@/types";
 
 function generateId(): string {
-  return Math.random().toString(36).substring(2, 10) + Date.now().toString(36);
+  return crypto.randomUUID();
 }
 
 export const useMeetingStore = create<StoreState>((set, get) => ({
@@ -146,9 +139,9 @@ export const useMeetingStore = create<StoreState>((set, get) => ({
         currentSession: {
           ...currentSession,
           recipientChoice: choice,
-          status: "confirmed",
+          status: "response_received",
         },
-        meetingStatus: "confirmed",
+        meetingStatus: "response_received",
       });
     }
   },

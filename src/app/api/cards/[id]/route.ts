@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
+import { z } from "zod";
 import { getCard, updateCard } from "@/lib/card-storage";
-import type { MeetingStatus, RecipientChoice } from "@/types";
+import { PatchBodySchema, MeetingStatusSchema, RecipientChoiceSchema } from "@/lib/validation";
 
 export async function GET(
   _request: Request,
@@ -28,15 +29,23 @@ export async function PATCH(
     const { id } = await params;
     const body = await request.json();
 
+    const parsed = PatchBodySchema.safeParse(body);
+    if (!parsed.success) {
+      return NextResponse.json(
+        { error: "Некорректные данные", details: parsed.error.issues },
+        { status: 400 },
+      );
+    }
+
     const patch: {
-      status?: MeetingStatus;
-      recipient_choice?: RecipientChoice;
+      status?: z.infer<typeof MeetingStatusSchema>;
+      recipient_choice?: z.infer<typeof RecipientChoiceSchema>;
     } = {};
 
-    if (body.status) patch.status = body.status;
-    if (body.recipientChoice) {
-      patch.status = "confirmed";
-      patch.recipient_choice = body.recipientChoice;
+    if (parsed.data.status) patch.status = parsed.data.status;
+    if (parsed.data.recipientChoice) {
+      patch.status = "response_received";
+      patch.recipient_choice = parsed.data.recipientChoice;
     }
 
     const session = await updateCard(id, patch);

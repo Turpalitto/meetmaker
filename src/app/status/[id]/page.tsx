@@ -1,13 +1,14 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useParams } from 'next/navigation';
 import Link from 'next/link';
-import { fetchCard } from '@/lib/api';
+import { fetchCard, updateCardStatus } from '@/lib/api';
 import { choiceToLabel, generateShareUrl } from '@/lib/utils';
 import { getThemeConfig } from '@/lib/themes';
+import { useCardRealtime } from '@/hooks/useCardRealtime';
 import type { MeetingSession, MeetingStatus } from '@/types';
-import { IconCheck, IconClock, IconCopy, IconPin, IconTelegram, IconWhatsapp } from '@/components/Icons';
+import { IconCheck, IconCopy, IconTelegram, IconWhatsapp } from '@/components/Icons';
 
 const STATUS_STEPS: { key: MeetingStatus; label: string; desc: string }[] = [
   { key: 'created', label: 'Открытка создана', desc: 'Ссылка готова к отправке' },
@@ -34,7 +35,18 @@ export default function StatusPage() {
   const [session, setSession] = useState<MeetingSession | null>(null);
   const [loading, setLoading] = useState(true);
   const [copied, setCopied] = useState(false);
-  const [shareUrl, setShareUrl] = useState('');
+  const [confirming, setConfirming] = useState(false);
+
+  const shareUrl = useMemo(() => (id ? generateShareUrl(id) : ''), [id]);
+
+  const handleRealtimeUpdate = useCallback((updated: MeetingSession) => {
+    setSession(updated);
+  }, []);
+
+  const { active: realtimeActive, connected: realtimeConnected } = useCardRealtime(
+    id,
+    handleRealtimeUpdate,
+  );
 
   useEffect(() => {
     if (!id) return;
@@ -49,18 +61,17 @@ export default function StatusPage() {
     }
 
     load();
-    const interval = setInterval(load, 5000);
-    return () => clearInterval(interval);
-  }, [id]);
 
-  useEffect(() => {
-    if (id) setShareUrl(generateShareUrl(id));
-  }, [id]);
+    const pollInterval = realtimeActive ? 30000 : 5000;
+    const interval = setInterval(load, pollInterval);
+    return () => clearInterval(interval);
+  }, [id, session?.status, realtimeActive]);
 
   const theme = session?.card.theme ?? 'romantic';
   const config = getThemeConfig(theme);
   const currentIdx = session ? statusIndex(session.status) : -1;
-  const responded = session ? currentIdx >= statusIndex('confirmed') : false;
+  const recipientResponded = session ? currentIdx >= statusIndex('response_received') : false;
+  const confirmed = session?.status === 'confirmed';
 
   async function copyLink() {
     try {
@@ -69,6 +80,19 @@ export default function StatusPage() {
       setTimeout(() => setCopied(false), 2000);
     } catch {
       setCopied(false);
+    }
+  }
+
+  async function handleConfirmMeeting() {
+    if (!id) return;
+    setConfirming(true);
+    try {
+      const updated = await updateCardStatus(id, 'confirmed');
+      setSession(updated);
+    } catch {
+      // polling will sync eventually
+    } finally {
+      setConfirming(false);
     }
   }
 
@@ -83,11 +107,22 @@ export default function StatusPage() {
           <Link href="/" className="mm-text-button text-sm" style={{ color: 'var(--mm-ink-soft)' }}>
             ← MeetMaker
           </Link>
-          {session && (
-            <span className={`mm-chip ${responded ? 'mm-badge-success' : 'mm-badge-pending'}`}>
-              {responded ? 'Есть ответ' : 'Ждём ответ'}
-            </span>
-          )}
+          <div className="flex items-center gap-2">
+            {realtimeConnected && (
+              <span
+                className="mm-chip"
+                style={{ fontSize: '0.7rem', opacity: 0.7 }}
+                title="Realtime-подключение активно"
+              >
+                live
+              </span>
+            )}
+            {session && (
+              <span className={`mm-chip ${recipientResponded ? 'mm-badge-success' : 'mm-badge-pending'}`}>
+                {confirmed ? 'Встреча согласована' : recipientResponded ? 'Есть ответ' : 'Ждём ответ'}
+              </span>
+            )}
+          </div>
         </div>
 
         {loading && (
@@ -112,13 +147,13 @@ export default function StatusPage() {
                 {config.emoji} Открытка для {session.card.recipientName || 'получателя'}
               </p>
               <h1 className="mm-display mt-3 text-3xl">
-                {responded ? 'Встреча назначена' : session.card.title}
+                {confirmed ? 'Встреча согласована' : recipientResponded ? 'Встреча назначена' : session.card.title}
               </h1>
 
               <div className="mt-7 space-y-0">
                 {STATUS_STEPS.map((step, index) => {
                   const done = index <= currentIdx;
-                  const pending = index === currentIdx + 1 || (index === currentIdx && !responded);
+                  const pending = index === currentIdx + 1 || (index === currentIdx && !recipientResponded);
                   const last = index === STATUS_STEPS.length - 1;
                   return (
                     <div key={step.key} className="flex gap-4">
@@ -156,6 +191,16 @@ export default function StatusPage() {
                   <p className="mm-display mt-2 text-lg" style={{ color: 'var(--mm-on-container)' }}>
                     {choiceToLabel(session.recipientChoice)}
                   </p>
+                  {recipientResponded && !confirmed && (
+                    <button
+                      type="button"
+                      onClick={handleConfirmMeeting}
+                      disabled={confirming}
+                      className="mm-filled-button mt-4 w-full disabled:opacity-50"
+                    >
+                      {confirming ? 'Подтверждаем…' : 'Подтвердить встречу'}
+                    </button>
+                  )}
                 </div>
               )}
             </div>
@@ -170,7 +215,7 @@ export default function StatusPage() {
                 </button>
               </div>
 
-              {!responded && (
+              {!recipientResponded && (
                 <div className="mt-4 flex flex-wrap gap-2">
                   <a
                     className="mm-share-btn"

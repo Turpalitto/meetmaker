@@ -89,13 +89,11 @@ export async function createCard(card: MeetingCard): Promise<MeetingSession> {
   const supabase = getSupabase();
   if (supabase) {
     let { error } = await supabase.from("meeting_cards").insert(row);
-    if (error?.message?.includes("recipient_name") || error?.message?.includes("appearance")) {
-      const {
-        recipient_name: _rn,
-        personal_note: _pn,
-        appearance: _ap,
-        ...legacyRow
-      } = row;
+    if (error?.code === "42703") {
+      const legacyRow = { ...row };
+      delete legacyRow.recipient_name;
+      delete legacyRow.personal_note;
+      delete legacyRow.appearance;
       const retry = await supabase.from("meeting_cards").insert(legacyRow);
       error = retry.error;
     }

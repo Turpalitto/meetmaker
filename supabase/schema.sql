@@ -21,9 +21,22 @@ create index if not exists meeting_cards_created_at_idx on public.meeting_cards 
 
 alter table public.meeting_cards enable row level security;
 
--- Public read/write via service role only (API routes use service role key)
+-- Service role bypasses RLS; explicit policy for clarity
+-- (API routes use service role key)
 create policy "Service role full access"
   on public.meeting_cards
   for all
   using (true)
   with check (true);
+
+-- Anon read access for realtime subscriptions (browser client uses anon key)
+-- Writes still go through API routes with service role key
+create policy "Anon read for realtime"
+  on public.meeting_cards
+  for select
+  to anon
+  using (true);
+
+-- Enable realtime for meeting_cards so the status page can subscribe
+-- instead of polling. Requires Supabase project with realtime enabled.
+alter publication supabase_realtime add table public.meeting_cards;

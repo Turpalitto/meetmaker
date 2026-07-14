@@ -40,12 +40,15 @@ export default function Confetti({
       rotate: Math.random() * 360,
       size: 0.7 + Math.random() * 0.7,
     }));
-    setPieces(next);
+    const raf = requestAnimationFrame(() => setPieces(next));
     const t = setTimeout(() => {
       setPieces([]);
       onEnd?.();
     }, 5000);
-    return () => clearTimeout(t);
+    return () => {
+      cancelAnimationFrame(raf);
+      clearTimeout(t);
+    };
   }, [fire, onEnd]);
 
   if (pieces.length === 0) return null;

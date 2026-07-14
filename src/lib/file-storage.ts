@@ -4,6 +4,14 @@ import type { CardRow } from "@/lib/card-storage";
 
 const DATA_DIR = path.join(process.cwd(), ".data", "cards");
 
+function assertFileStorageAvailable(): void {
+  if (process.env.VERCEL) {
+    throw new Error(
+      "File storage is not available on Vercel. Configure Supabase or GitHub storage.",
+    );
+  }
+}
+
 function safeId(id: string): string {
   const safe = id.replace(/[^a-zA-Z0-9_-]/g, "");
   if (!safe) throw new Error("Некорректный id открытки");
@@ -19,6 +27,7 @@ async function ensureDataDir(): Promise<void> {
 }
 
 export async function fileCreateCard(row: CardRow): Promise<void> {
+  assertFileStorageAvailable();
   await ensureDataDir();
   await writeFile(cardFilePath(row.id), JSON.stringify(row, null, 2), "utf-8");
 }
@@ -37,6 +46,7 @@ export async function fileUpdateCard(
   id: string,
   patch: Partial<Pick<CardRow, "status" | "recipient_choice">>,
 ): Promise<CardRow | null> {
+  assertFileStorageAvailable();
   const row = await fileGetCard(id);
   if (!row) return null;
   const updated: CardRow = { ...row, ...patch };
